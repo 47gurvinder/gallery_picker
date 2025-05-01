@@ -1,5 +1,5 @@
+/*
 import 'package:flutter/material.dart';
-import 'package:gallery_picker/models/media_type.dart';
 import 'package:get/get.dart';
 
 import '../../controller/gallery_controller.dart';
@@ -25,7 +25,6 @@ class GalleryPickerView extends StatefulWidget {
   final List<MediaFile>? initSelectedMedia;
   final List<MediaFile>? extraRecentMedia;
   final bool singleMedia;
-  final GalleryMediaType mediaType;
 
   const GalleryPickerView(
       {super.key,
@@ -38,7 +37,6 @@ class GalleryPickerView extends StatefulWidget {
       this.heroBuilder,
       this.locale,
       this.multipleMediaBuilder,
-      this.mediaType = GalleryMediaType.all,
       this.startWithRecent = false});
 
   @override
@@ -54,7 +52,7 @@ class _GalleryPickerState extends State<GalleryPickerView> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 400)).then(
+    Future.delayed(const Duration()).then(
       (value) {
         _initializeGallery();
       },
@@ -77,7 +75,6 @@ class _GalleryPickerState extends State<GalleryPickerView> {
         initSelectedMedias: widget.initSelectedMedia,
         extraRecentMedia: widget.extraRecentMedia,
         isRecent: widget.startWithRecent,
-        mediaType: widget.mediaType
       );
     }
 
@@ -252,3 +249,4 @@ class _GalleryPickerState extends State<GalleryPickerView> {
     );
   }
 }
+*/

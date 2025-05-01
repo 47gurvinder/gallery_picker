@@ -18,9 +18,11 @@ class AlbumPage extends StatelessWidget {
       required this.isBottomSheet});
   @override
   Widget build(BuildContext context) {
+    print("seledAlbum: ${album?.name}");
     return PopScope(
         canPop: false,
         onPopInvoked: (value) {
+          print("selectMedia pop 2 ");
           controller.backToPicker();
         },
         child: Scaffold(

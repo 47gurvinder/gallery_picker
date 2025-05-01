@@ -5,8 +5,13 @@ import '../../controller/gallery_controller.dart';
 class PickerAppBar extends StatelessWidget implements PreferredSizeWidget {
   final PhoneGalleryController controller;
   final bool isBottomSheet;
+  final bool singleMedia;
+
   const PickerAppBar(
-      {super.key, required this.isBottomSheet, required this.controller});
+      {super.key,
+      required this.isBottomSheet,
+      required this.singleMedia,
+      required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +34,18 @@ class PickerAppBar extends StatelessWidget implements PreferredSizeWidget {
           )),
       title: getTitle(),
       actions: [
-        !controller.pickerMode && controller.isRecent
-            ? TextButton(
-                onPressed: () {
-                  controller.switchPickerMode(true);
-                },
-                child: Icon(
-                  Icons.check_box_outlined,
-                  color: controller.config.appbarIconColor,
-                ))
-            : const SizedBox()
+        singleMedia
+            ? SizedBox.shrink()
+            : !controller.pickerMode && controller.isRecent
+                ? TextButton(
+                    onPressed: () {
+                      controller.switchPickerMode(true);
+                    },
+                    child: Icon(
+                      Icons.check_box_outlined,
+                      color: controller.config.appbarIconColor,
+                    ))
+                : const SizedBox()
       ],
     );
   }

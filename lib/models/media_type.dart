@@ -1,0 +1,1 @@
+enum GalleryMediaType { image, video, all }

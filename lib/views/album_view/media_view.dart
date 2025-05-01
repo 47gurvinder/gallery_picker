@@ -49,16 +49,21 @@ class MediaView extends StatelessWidget {
                 }
               } else {
                 controller.selectMedia(file);
+                print("selectMedia 1 $file");
               }
             },
             onTap: () async {
               if (controller.pickerMode) {
                 if (controller.isSelectedMedia(file)) {
                   controller.unselectMedia(file);
+                  print("selectMedia 2 $file");
                 } else {
                   controller.selectMedia(file);
+                  print("selectMedia 3 $file");
                 }
               } else {
+                print("selectMedia 4 $file");
+                controller.selectedFiles.clear(); // Important: clear previous selection
                 controller.selectedFiles.add(file);
                 if (controller.heroBuilder != null) {
                   await Navigator.of(context).push(
@@ -66,22 +71,27 @@ class MediaView extends StatelessWidget {
                     return controller.heroBuilder!(file.id, file, context);
                   }));
                   controller.switchPickerMode(true);
+                  print("selectMedia 5 $file");
                 } else if (controller.multipleMediasBuilder != null) {
                   await Navigator.of(context).push(
                       MaterialPageRoute<void>(builder: (BuildContext context) {
                     return controller.multipleMediasBuilder!([file], context);
                   }));
                   controller.switchPickerMode(true);
+                  print("selectMedia 6 $file");
                 } else {
+
                   controller.onSelect(controller.selectedFiles);
                   if (isBottomSheet) {
+                    print("selectMedia 7 $file");
                     BottomSheetPanel.close();
                     controller.switchPickerMode(true);
                     controller.updatePickerListener();
                   } else {
-                    Navigator.pop(context);
+                    print("selectMedia 8 $file");
                     controller.updatePickerListener();
                     controller.disposeController();
+                    Navigator.of(context, rootNavigator: true).pop(); // --> full pop
                   }
                 }
               }

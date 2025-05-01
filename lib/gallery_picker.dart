@@ -3,6 +3,7 @@ library gallery_picker;
 import 'package:bottom_sheet_scaffold/bottom_sheet_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_picker/models/gallery_media.dart';
+import 'package:gallery_picker/models/media_type.dart';
 import 'package:get/get.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -52,15 +53,15 @@ class GalleryPicker {
     }
   }
 
-  static Future<List<MediaFile>?> pickMedia(
-      {Config? config,
-      bool startWithRecent = false,
-      bool singleMedia = false,
-      Locale? locale,
-      PageTransitionType pageTransitionType = PageTransitionType.rightToLeft,
-      List<MediaFile>? initSelectedMedia,
-      List<MediaFile>? extraRecentMedia,
-      required BuildContext context}) async {
+  static Future<List<MediaFile>?> pickMedia({Config? config,
+    bool startWithRecent = false,
+    bool singleMedia = false,
+    Locale? locale,
+    PageTransitionType pageTransitionType = PageTransitionType.rightToLeft,
+    List<MediaFile>? initSelectedMedia,
+    List<MediaFile>? extraRecentMedia,
+    required BuildContext context,
+    GalleryMediaType? mediaType}) async {
     List<MediaFile>? media;
     await Navigator.push(
         context,
@@ -68,6 +69,7 @@ class GalleryPicker {
             type: pageTransitionType,
             child: GalleryPickerView(
               onSelect: (mediaTmp) {
+                print("GalleryPickerView ${mediaTmp.length} ");
                 media = mediaTmp;
               },
               config: config,
@@ -76,23 +78,23 @@ class GalleryPicker {
               initSelectedMedia: initSelectedMedia,
               extraRecentMedia: extraRecentMedia,
               startWithRecent: startWithRecent,
+              mediaType: mediaType ?? GalleryMediaType.all,
             )));
     return media;
   }
 
-  static Future<void> pickMediaWithBuilder(
-      {Config? config,
-      required Widget Function(List<MediaFile> media, BuildContext context)?
-          multipleMediaBuilder,
-      Widget Function(String tag, MediaFile media, BuildContext context)?
-          heroBuilder,
-      Locale? locale,
-      bool singleMedia = false,
-      PageTransitionType pageTransitionType = PageTransitionType.rightToLeft,
-      List<MediaFile>? initSelectedMedia,
-      List<MediaFile>? extraRecentMedia,
-      bool startWithRecent = false,
-      required BuildContext context}) async {
+  static Future<void> pickMediaWithBuilder({Config? config,
+    required Widget Function(List<MediaFile> media, BuildContext context)?
+    multipleMediaBuilder,
+    Widget Function(String tag, MediaFile media, BuildContext context)?
+    heroBuilder,
+    Locale? locale,
+    bool singleMedia = false,
+    PageTransitionType pageTransitionType = PageTransitionType.rightToLeft,
+    List<MediaFile>? initSelectedMedia,
+    List<MediaFile>? extraRecentMedia,
+    bool startWithRecent = false,
+    required BuildContext context}) async {
     await Navigator.push(
         context,
         PageTransition(
@@ -130,8 +132,11 @@ class GalleryPicker {
     return BottomSheetPanel.isCollapsed;
   }
 
-  static Future<GalleryMedia?> collectGallery({Locale? locale}) async {
-    return await PhoneGalleryController.collectGallery(locale: locale);
+  static Future<GalleryMedia?> collectGallery(
+      {Locale? locale, GalleryMediaType mediaType = GalleryMediaType
+          .all}) async {
+    return await PhoneGalleryController.collectGallery(
+        locale: locale, mediaType:mediaType);
   }
 
   static Future<GalleryMedia?> initializeGallery({Locale? locale}) async {
