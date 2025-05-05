@@ -69,8 +69,6 @@ class GalleryPicker {
             type: pageTransitionType,
             child: GalleryPickerView(
               onSelect: (mediaTmp) {
-                print("GalleryPickerView length: ${mediaTmp.length} ");
-                print("GalleryPickerView files: ${mediaTmp.map((e) => e.toString(),)} ");
                 media = mediaTmp;
               },
               config: config,
@@ -81,9 +79,6 @@ class GalleryPicker {
               startWithRecent: startWithRecent,
               mediaType: mediaType ?? GalleryMediaType.all,
             )));
-
-    print("GalleryPickerView files: ${media?.map((e) => e.toString(),)} ");
-
     return media;
   }
 

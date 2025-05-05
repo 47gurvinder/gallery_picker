@@ -19,8 +19,6 @@ class AlbumMediasView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("seledAlbum len: ${controller.selectedFiles.length}");
-
     return Stack(
       children: [
         ListView(

@@ -120,7 +120,6 @@ class _GalleryPickerState extends State<GalleryPickerView> {
                 PopScope(
                   canPop: true,
                   onPopInvoked: (value) {
-                    print("selectMedia pop 1 ");
                     if (!widget.isBottomSheet) {
                       galleryController.disposeController();
                     }
@@ -176,8 +175,6 @@ class _GalleryPickerState extends State<GalleryPickerView> {
                           child: PageView(
                             controller: galleryController.pickerPageController,
                             onPageChanged: (value) {
-                              print("seledAlbum 2: ${value}");
-
                               galleryController.isRecent = (value == 0);
                               galleryController.switchPickerMode(false);
                             },
