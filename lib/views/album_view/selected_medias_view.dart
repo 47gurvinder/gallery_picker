@@ -64,12 +64,15 @@ class SelectedMediasView extends StatelessWidget {
                         controller.selectedFiles, context);
                   }));
                 } else {
+                  print("controller.selectedFiles: ${controller.selectedFiles}");
                   controller.onSelect(controller.selectedFiles);
                   if (isBottomSheet) {
                     BottomSheetPanel.close();
                   } else {
-                    Navigator.pop(context);
+                    controller.updatePickerListener();
                     controller.disposeController();
+                    Navigator.of(context,rootNavigator: true).pop();
+
                   }
                 }
               },

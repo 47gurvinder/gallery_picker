@@ -14,13 +14,17 @@ dependencies:
   photo_gallery:
     git:
       url: https://github.com/gataman/photo_gallery.git
-      
+  file_picker: ^10.1.2
   permission_handler: ^11.3.1
   transparent_image: ^2.0.1
   video_player: ^2.8.2
   device_info_plus: ^11.4.0
   get: ^4.6.6
   video_thumbnail: ^0.5.3
+#  video_thumbnail:
+#    git:
+#      url: https://github.com/zeelbhanderi/video_thumbnail.git
+
   intl: ^0.19.0
   page_transition: ^2.1.0
   bottom_sheet_scaffold: ^0.1.9

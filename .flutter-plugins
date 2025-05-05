@@ -1,5 +1,7 @@
 # This is a generated file; do not edit or check into version control.
 device_info_plus=/Users/gurwinder/.pub-cache/hosted/pub.dev/device_info_plus-11.4.0/
+file_picker=/Users/gurwinder/.pub-cache/hosted/pub.dev/file_picker-10.1.2/
+flutter_plugin_android_lifecycle=/Users/gurwinder/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.28/
 permission_handler=/Users/gurwinder/.pub-cache/hosted/pub.dev/permission_handler-11.4.0/
 permission_handler_android=/Users/gurwinder/.pub-cache/hosted/pub.dev/permission_handler_android-12.1.0/
 permission_handler_apple=/Users/gurwinder/.pub-cache/hosted/pub.dev/permission_handler_apple-9.4.7/

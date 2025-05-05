@@ -68,17 +68,15 @@ class _GalleryPickerState extends State<GalleryPickerView> {
     if (galleryController.configurationCompleted) {
       galleryController.updateConfig(widget.config);
     } else {
-      galleryController.configuration(
-        widget.config,
-        onSelect: widget.onSelect,
-        startWithRecent: widget.startWithRecent,
-        heroBuilder: widget.heroBuilder,
-        multipleMediasBuilder: widget.multipleMediaBuilder,
-        initSelectedMedias: widget.initSelectedMedia,
-        extraRecentMedia: widget.extraRecentMedia,
-        isRecent: widget.startWithRecent,
-        mediaType: widget.mediaType
-      );
+      galleryController.configuration(widget.config,
+          onSelect: widget.onSelect,
+          startWithRecent: widget.startWithRecent,
+          heroBuilder: widget.heroBuilder,
+          multipleMediasBuilder: widget.multipleMediaBuilder,
+          initSelectedMedias: widget.initSelectedMedia,
+          extraRecentMedia: widget.extraRecentMedia,
+          isRecent: widget.startWithRecent,
+          mediaType: widget.mediaType);
     }
 
     config = galleryController.config;
