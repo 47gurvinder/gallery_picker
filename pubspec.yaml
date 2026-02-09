@@ -11,9 +11,15 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.6
+  # photo_gallery:
+    # git:
+      # url: https://github.com/DeuMiAn/photo_gallery.git
+      # url: https://github.com/gataman/photo_gallery.git
+      # https://github.com/DeuMiAn/photo_gallery.git
+
   photo_gallery:
-    git:
-      url: https://github.com/gataman/photo_gallery.git
+    path: /Users/gurwinder/projects/gurwinder/plugins/photo_gallery
+
   file_picker: ^10.1.2
   permission_handler: ^11.3.1
   transparent_image: ^2.0.1
