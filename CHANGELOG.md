@@ -1,3 +1,12 @@
+## 0.5.2
+
+* Improved gallery controller with paginated media loading
+* Album hydration improvements for mixed image/video content
+* Permission handling fixes for iOS and Android 13+
+* Added permission denied view
+* Gallery picker view and album view enhancements
+* Config and GalleryAlbum model updates
+
 ## 0.0.1
 
 * Init
