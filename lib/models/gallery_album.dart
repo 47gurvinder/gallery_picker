@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -14,14 +15,31 @@ import 'config.dart';
 
 class GalleryAlbum {
   late Album album;
+  Album? secondaryAlbum;
   List<int>? thumbnail;
   List<DateCategory> dateCategories = [];
   late AlbumType type;
+  int _estimatedCount = 0;
+  bool _initialized = false;
+  bool _isLoadingMore = false;
+  bool _hasLoadedAllMedia = false;
+  Future<void>? _initializationTask;
+  Future<void>? _paginationTask;
+  Future<void>? _previewTask;
+
+  bool get isInitialized => _initialized;
+  bool get isLoadingMore => _isLoadingMore;
+  bool get hasLoadedAllMedia => _hasLoadedAllMedia;
+  bool get hasPreview => thumbnail != null;
   int get count =>
-      dateCategories.expand((element) => element.files).toList().length;
+      _initialized
+          ? dateCategories.expand((element) => element.files).toList().length
+          : _estimatedCount;
   String? get name => album.name;
 
-  GalleryAlbum.album(this.album);
+  GalleryAlbum.album(this.album) {
+    _estimatedCount = album.count;
+  }
 
   GalleryAlbum(
       {required this.album,
@@ -39,6 +57,14 @@ class GalleryAlbum {
     this.type = type;
   }
 
+  void addEstimatedCount(int count) {
+    _estimatedCount += count;
+  }
+
+  void setSecondaryAlbum(Album album) {
+    secondaryAlbum = album;
+  }
+
   IconData get icon {
     switch (type) {
       case AlbumType.image:
@@ -50,29 +76,161 @@ class GalleryAlbum {
     }
   }
 
-  Future<void> initialize({Locale? locale}) async {
-    List<DateCategory> dateCategory = [];
-    for (var medium in sortAlbumMediaDates((await album.listMedia()).items)) {
+  Future<void> initialize(
+      {Locale? locale,
+      VoidCallback? onChanged,
+      bool lightWeight = false}) async {
+    if (_initialized) {
+      return _paginationTask ?? Future.value();
+    }
+
+    if (_initializationTask != null) {
+      return _initializationTask!;
+    }
+
+    _initializationTask =
+        _initializeInPages(locale: locale, onChanged: onChanged, lightWeight: lightWeight);
+    await _initializationTask!;
+    _initializationTask = null;
+  }
+
+  Future<void> loadPreview({VoidCallback? onChanged}) async {
+    if (thumbnail != null) {
+      return;
+    }
+    if (_previewTask != null) {
+      return _previewTask!;
+    }
+
+    _previewTask = _loadThumbnail().whenComplete(() {
+      onChanged?.call();
+      _previewTask = null;
+    });
+
+    return _previewTask!;
+  }
+
+  Future<void> _initializeInPages(
+      {Locale? locale,
+      VoidCallback? onChanged,
+      required bool lightWeight}) async {
+    _isLoadingMore = true;
+
+    MediaPage primaryPage = await album.listMedia(
+      take: PhotoGallery.defaultPageSize,
+      lightWeight: lightWeight,
+    );
+    _appendMediaItems(primaryPage.items, locale: locale);
+
+    MediaPage? secondaryPage;
+    if (type == AlbumType.mixed && secondaryAlbum != null) {
+      secondaryPage = await secondaryAlbum!.listMedia(
+        take: PhotoGallery.defaultPageSize,
+        lightWeight: lightWeight,
+      );
+      _appendMediaItems(secondaryPage.items, locale: locale);
+    }
+
+    sort();
+    await _loadThumbnail();
+    _initialized = true;
+    onChanged?.call();
+
+    List<Future<void>> remainingPageTasks = [];
+    if (!primaryPage.isLast) {
+      remainingPageTasks.add(_loadRemainingPages(
+        sourceAlbum: album,
+        startAt: primaryPage.end,
+        locale: locale,
+        onChanged: onChanged,
+        lightWeight: lightWeight,
+      ));
+    }
+    if (secondaryPage != null && !secondaryPage.isLast) {
+      remainingPageTasks.add(_loadRemainingPages(
+        sourceAlbum: secondaryAlbum!,
+        startAt: secondaryPage.end,
+        locale: locale,
+        onChanged: onChanged,
+        lightWeight: lightWeight,
+      ));
+    }
+
+    if (remainingPageTasks.isEmpty) {
+      _hasLoadedAllMedia = true;
+      _isLoadingMore = false;
+      onChanged?.call();
+      return;
+    }
+
+    _paginationTask = Future.wait(remainingPageTasks).then((_) {
+      _hasLoadedAllMedia = true;
+      _isLoadingMore = false;
+      onChanged?.call();
+    });
+    unawaited(_paginationTask);
+  }
+
+  Future<void> _loadRemainingPages(
+      {required Album sourceAlbum,
+      required int startAt,
+      required Locale? locale,
+      VoidCallback? onChanged,
+      required bool lightWeight}) async {
+    int currentOffset = startAt;
+
+    while (currentOffset < sourceAlbum.count) {
+      final page = await sourceAlbum.listMedia(
+        skip: currentOffset,
+        take: PhotoGallery.defaultPageSize,
+        lightWeight: lightWeight,
+      );
+      if (page.items.isEmpty) {
+        break;
+      }
+
+      _appendMediaItems(page.items, locale: locale);
+      sort();
+      currentOffset = page.end;
+      onChanged?.call();
+
+      if (page.isLast) {
+        break;
+      }
+    }
+  }
+
+  Future<void> _loadThumbnail() async {
+    if (thumbnail != null) {
+      return;
+    }
+
+    try {
+      thumbnail = await album.getThumbnail(highQuality: false);
+      if (thumbnail == null && secondaryAlbum != null) {
+        thumbnail = await secondaryAlbum!.getThumbnail(highQuality: false);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
+  void _appendMediaItems(List<Medium> items, {required Locale? locale}) {
+    for (var medium in sortAlbumMediaDates(items)) {
       MediaFile mediaFile = MediaFile.medium(medium);
       String name = getDateCategory(mediaFile, locale: locale);
-      if (dateCategory.any((element) => element.name == name)) {
-        dateCategory
+      if (dateCategories.any((element) => element.name == name)) {
+        dateCategories
             .singleWhere((element) => element.name == name)
             .files
             .add(mediaFile);
       } else {
         DateTime? lastDate = mediaFile.lastModified;
         lastDate = lastDate ?? DateTime.now();
-        dateCategory.add(
+        dateCategories.add(
             DateCategory(files: [mediaFile], name: name, dateTime: lastDate));
-      }
-    }
-    dateCategories = dateCategory;
-    try {
-      thumbnail = await album.getThumbnail(highQuality: true);
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
       }
     }
   }

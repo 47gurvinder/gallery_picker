@@ -19,19 +19,47 @@ class AlbumMediasView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final categories = checkCategories(galleryAlbum.dateCategories);
+
     return Stack(
       children: [
-        ListView(
-          children: [
-            for (var category in checkCategories(galleryAlbum.dateCategories))
-              DateCategoryWiew(
-                category: category,
-                controller: controller,
-                singleMedia: singleMedia,
-                isBottomSheet: isBottomSheet,
+        if (categories.isEmpty && galleryAlbum.isLoadingMore)
+          Center(
+            child: SizedBox(
+              width: 28,
+              height: 28,
+              child: CircularProgressIndicator(
+                strokeWidth: 2.5,
+                color: controller.config.underlineColor,
               ),
-          ],
-        ),
+            ),
+          )
+        else
+          ListView(
+            children: [
+              for (var category in categories)
+                DateCategoryWiew(
+                  category: category,
+                  controller: controller,
+                  singleMedia: singleMedia,
+                  isBottomSheet: isBottomSheet,
+                ),
+              if (galleryAlbum.isLoadingMore)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Center(
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        color: controller.config.underlineColor,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         if (controller.selectedFiles.isNotEmpty)
           Align(
               alignment: Alignment.bottomCenter,

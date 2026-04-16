@@ -81,6 +81,17 @@ class PhoneGalleryController extends GetxController {
   late PageController pageController;
   late PageController pickerPageController;
   GalleryAlbum? selectedAlbum;
+  bool _isHydratingAlbums = false;
+  Locale? _activeLocale;
+  Timer? _permissionPollingTimer;
+  Future<void>? _initializationTask;
+  int _permissionPollingAttempts = 0;
+  static const int _maxPermissionPollingAttempts = 180;
+
+  static bool _isPermissionAuthorized(PermissionStatus status) {
+    return status == PermissionStatus.granted ||
+        status == PermissionStatus.limited;
+  }
 
   void resetBottomSheetView() {
     if (permissionGranted == true) {
@@ -127,6 +138,10 @@ class PhoneGalleryController extends GetxController {
     required bool singleMedia,
     required bool isBottomSheet}) async {
     _selectedFiles.clear();
+    if (!album.isInitialized) {
+      unawaited(album.initialize(
+          locale: _activeLocale, onChanged: update, lightWeight: true));
+    }
     selectedAlbum = album;
     update();
     updatePickerListener();
@@ -180,44 +195,72 @@ class PhoneGalleryController extends GetxController {
     }
   }
 
-  static Future<bool> promptPermissionSetting() async {
+  static Future<bool> promptPermissionSetting(
+      {required GalleryMediaType mediaType}) async {
     if (Platform.isAndroid) {
       final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
       final AndroidDeviceInfo info = await deviceInfoPlugin.androidInfo;
       if (info.version.sdkInt >= 33) {
-        if (await PhoneGalleryController.requestPermission(Permission.photos)) {
-          return await PhoneGalleryController.requestPermission(
-              Permission.videos);
-        } else {
+        if (mediaType == GalleryMediaType.image) {
+          return await PhoneGalleryController.requestPermission(Permission.photos);
+        }
+        if (mediaType == GalleryMediaType.video) {
+          return await PhoneGalleryController.requestPermission(Permission.videos);
+        }
+
+        final photosGranted =
+            await PhoneGalleryController.requestPermission(Permission.photos);
+        if (!photosGranted) {
           return false;
         }
+        return await PhoneGalleryController.requestPermission(Permission.videos);
       } else {
         return await PhoneGalleryController.requestPermission(
             Permission.storage);
       }
     }
-    bool statusStorage =
-    await PhoneGalleryController.requestPermission(Permission.storage);
 
-    return statusStorage;
+    if (Platform.isIOS) {
+      return await PhoneGalleryController.requestPermission(Permission.photos);
+    }
+
+    return await PhoneGalleryController.requestPermission(Permission.storage);
   }
 
   static Future<bool> requestPermission(Permission permission) async {
-    if (await permission.isGranted) {
+    final current = await permission.status;
+    if (_isPermissionAuthorized(current)) {
       return true;
-    } else {
-      var result = await permission.request();
-      if (result == PermissionStatus.granted) {
-        return true;
-      }
     }
-    return false;
+
+    final requested = await permission.request();
+    return _isPermissionAuthorized(requested);
   }
 
   Future<void> initializeAlbums({Locale? locale}) async {
+    if (_isInitialized) {
+      return;
+    }
+    if (_initializationTask != null) {
+      return _initializationTask!;
+    }
+
+    _initializationTask = _initializeAlbumsInternal(locale: locale);
+    try {
+      await _initializationTask!;
+    } finally {
+      _initializationTask = null;
+    }
+  }
+
+  Future<void> _initializeAlbumsInternal({Locale? locale}) async {
+    _activeLocale = locale;
     _media = await PhoneGalleryController.collectGallery(
-        locale: locale, mediaType: mediaType);
+        locale: locale, mediaType: mediaType, eagerLoad: false);
     if (_media != null) {
+      _permissionPollingTimer?.cancel();
+      _permissionPollingTimer = null;
+      _permissionPollingAttempts = 0;
       if (_extraRecentMedia != null) {
         GalleryAlbum? recentTmp = recent;
         if (recentTmp != null) {
@@ -227,6 +270,7 @@ class PhoneGalleryController extends GetxController {
       }
       permissionGranted = true;
       _isInitialized = true;
+      unawaited(_hydrateAlbums(locale: locale));
     } else {
       permissionGranted = false;
       permissionListener(locale: locale);
@@ -234,11 +278,52 @@ class PhoneGalleryController extends GetxController {
     update();
   }
 
+  Future<void> _hydrateAlbums({Locale? locale}) async {
+    if (_isHydratingAlbums || _media == null) {
+      return;
+    }
+    _isHydratingAlbums = true;
+    try {
+      final albums = _media!.albums.map((e) => e).toList();
+      GalleryAlbum? recentAlbum;
+      try {
+        recentAlbum = albums.firstWhere((album) => album.name == "All");
+      } catch (_) {
+        recentAlbum = null;
+      }
+
+      if (recentAlbum != null) {
+        unawaited(recentAlbum.initialize(
+            locale: locale, onChanged: update, lightWeight: true));
+      }
+
+      for (final album in albums) {
+        if (identical(album, recentAlbum) || album.hasPreview) {
+          continue;
+        }
+        await album.loadPreview(onChanged: update);
+      }
+    } finally {
+      _isHydratingAlbums = false;
+    }
+  }
+
   void permissionListener({Locale? locale}) {
-    Timer.periodic(const Duration(seconds: 1), (timer) async {
+    _permissionPollingTimer?.cancel();
+    _permissionPollingAttempts = 0;
+    _permissionPollingTimer =
+        Timer.periodic(const Duration(seconds: 2), (timer) async {
+      _permissionPollingAttempts++;
+      if (_permissionPollingAttempts >= _maxPermissionPollingAttempts) {
+        timer.cancel();
+        _permissionPollingTimer = null;
+        return;
+      }
       if (await isGranted()) {
         initializeAlbums(locale: locale);
         timer.cancel();
+        _permissionPollingTimer = null;
+        _permissionPollingAttempts = 0;
       }
     });
   }
@@ -248,38 +333,92 @@ class PhoneGalleryController extends GetxController {
       final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
       final AndroidDeviceInfo info = await deviceInfoPlugin.androidInfo;
       if (info.version.sdkInt >= 33) {
+        if (mediaType == GalleryMediaType.image) {
+          return await Permission.photos.isGranted;
+        }
+        if (mediaType == GalleryMediaType.video) {
+          return await Permission.videos.isGranted;
+        }
         if (await Permission.photos.isGranted) {
           return await Permission.videos.isGranted;
-        } else {
-          return false;
         }
+        return false;
       } else {
         return await Permission.storage.isGranted;
       }
     }
-    return (await Permission.storage.isGranted);
+
+    if (Platform.isIOS) {
+      final status = await Permission.photos.status;
+      return _isPermissionAuthorized(status);
+    }
+
+    return await Permission.storage.isGranted;
   }
 
   static Future<GalleryMedia?> collectGallery(
-      {Locale? locale, required GalleryMediaType mediaType}) async {
-    if (await promptPermissionSetting()) {
+      {Locale? locale,
+      required GalleryMediaType mediaType,
+      bool eagerLoad = true}) async {
+    if (await promptPermissionSetting(mediaType: mediaType)) {
       List<GalleryAlbum> tempGalleryAlbums = [];
       List<Album> photoAlbums = [];
       List<Album> videoAlbums = [];
+
+      if (!eagerLoad) {
+        if (mediaType == GalleryMediaType.image) {
+          photoAlbums =
+                await PhotoGallery.listAlbums(mediumType: MediumType.image, approximateCount: true);
+        }
+
+        if (mediaType == GalleryMediaType.video) {
+          videoAlbums =
+                await PhotoGallery.listAlbums(mediumType: MediumType.video, approximateCount: true);
+        }
+
+        if (mediaType == GalleryMediaType.all) {
+            final mixedAlbums = await PhotoGallery.listAlbums(approximateCount: true);
+          for (final mixedAlbum in mixedAlbums) {
+            final entry = GalleryAlbum.album(mixedAlbum);
+            entry.setType = AlbumType.mixed;
+            tempGalleryAlbums.add(entry);
+          }
+        } else if (mediaType == GalleryMediaType.image) {
+          for (var photoAlbum in photoAlbums) {
+            GalleryAlbum entry = GalleryAlbum.album(photoAlbum);
+            entry.setType = AlbumType.image;
+            tempGalleryAlbums.add(entry);
+          }
+        } else {
+          for (var videoAlbum in videoAlbums) {
+            GalleryAlbum entry = GalleryAlbum.album(videoAlbum);
+            entry.setType = AlbumType.video;
+            tempGalleryAlbums.add(entry);
+          }
+        }
+
+        return GalleryMedia(tempGalleryAlbums);
+      }
 
       if (mediaType == GalleryMediaType.image ||
           mediaType == GalleryMediaType.all) {
         photoAlbums =
         await PhotoGallery.listAlbums(mediumType: MediumType.image);
+        if (mediaType == GalleryMediaType.all) {
+          videoAlbums =
+              await PhotoGallery.listAlbums(mediumType: MediumType.video);
+        }
         for (var photoAlbum in photoAlbums) {
           GalleryAlbum entireGalleryAlbum = GalleryAlbum.album(photoAlbum);
-          await entireGalleryAlbum.initialize(locale: locale);
+          await entireGalleryAlbum.initialize(
+              locale: locale, onChanged: null, lightWeight: false);
           entireGalleryAlbum.setType = AlbumType.image;
           if (videoAlbums.any((element) => element.id == photoAlbum.id)) {
             Album videoAlbum = videoAlbums
                 .singleWhere((element) => element.id == photoAlbum.id);
             GalleryAlbum videoGalleryAlbum = GalleryAlbum.album(videoAlbum);
-            await videoGalleryAlbum.initialize(locale: locale);
+            await videoGalleryAlbum.initialize(
+                locale: locale, onChanged: null, lightWeight: false);
             DateTime? lastPhotoDate = entireGalleryAlbum.lastDate;
             DateTime? lastVideoDate = videoGalleryAlbum.lastDate;
 
@@ -316,14 +455,17 @@ class PhoneGalleryController extends GetxController {
         }
       }
 
-      if (mediaType == GalleryMediaType.video ||
-          mediaType == GalleryMediaType.all) {
+      if (mediaType == GalleryMediaType.video) {
         videoAlbums =
         await PhotoGallery.listAlbums(mediumType: MediumType.video);
+      }
 
+      if (mediaType == GalleryMediaType.video ||
+          mediaType == GalleryMediaType.all) {
         for (var videoAlbum in videoAlbums) {
           GalleryAlbum galleryVideoAlbum = GalleryAlbum.album(videoAlbum);
-          await galleryVideoAlbum.initialize(locale: locale);
+          await galleryVideoAlbum.initialize(
+              locale: locale, onChanged: null, lightWeight: false);
           galleryVideoAlbum.setType = AlbumType.video;
           tempGalleryAlbums.add(galleryVideoAlbum);
         }
@@ -383,10 +525,16 @@ class PhoneGalleryController extends GetxController {
   }
 
   void disposeController() {
+    _permissionPollingTimer?.cancel();
+    _permissionPollingTimer = null;
+    _permissionPollingAttempts = 0;
     _media = null;
     _selectedFiles = [];
     _isInitialized = false;
-    Get.delete<PhoneGalleryController>();
-    update();
+    _isHydratingAlbums = false;
+    _initializationTask = null;
+    if (GetInstance().isRegistered<PhoneGalleryController>()) {
+      Get.delete<PhoneGalleryController>();
+    }
   }
 }

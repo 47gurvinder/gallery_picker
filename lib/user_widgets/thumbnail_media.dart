@@ -54,7 +54,7 @@ class ThumbnailMedia extends StatelessWidget {
                         color: Colors.grey,
                       ),
                     )
-                  else if (snapshot.hasError && onErrorBuilder == null)
+                  else if (snapshot.hasError && onErrorBuilder != null)
                     onErrorBuilder!(media, context)
                   else if (media.thumbnail != null)
                     FadeInImage(

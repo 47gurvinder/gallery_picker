@@ -20,7 +20,7 @@ class AlbumPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopScope(
         canPop: false,
-        onPopInvoked: (value) {
+          onPopInvokedWithResult: (value, result) {
           controller.backToPicker();
         },
         child: Scaffold(

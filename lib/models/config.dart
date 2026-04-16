@@ -21,6 +21,7 @@ class Config {
       lastWeek,
       tapPhotoSelect,
       selected;
+  int iOSOpeningGateMilliseconds;
   Mode mode;
 
   Config(
@@ -41,6 +42,7 @@ class Config {
       this.lastWeek = "Last Week",
       this.tapPhotoSelect = "Tap photo to select",
       this.selected = "Selected",
+      this.iOSOpeningGateMilliseconds = 420,
       this.mode = Mode.light,
       Widget? selectIcon}) {
     if (backgroundColor == null) {

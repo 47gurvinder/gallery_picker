@@ -254,6 +254,7 @@ List<MediaFile>? media = await GalleryPicker.pickMedia(
     lastWeek: "Last Week",
     tapPhotoSelect: "Tap photo to select",
     selected: "Selected",
+    iOSOpeningGateMilliseconds: 420,
     selectIcon: Container(
       width: 50,
       height: 50,

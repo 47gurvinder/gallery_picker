@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gallery_picker/gallery_picker.dart';
+import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import '../../controller/gallery_controller.dart';
 
 class PermissionDeniedView extends StatelessWidget {
   final Config config;
@@ -40,6 +43,14 @@ class PermissionDeniedView extends StatelessWidget {
               await openAppSettings();
             },
             child: const Text("Enable library access"),
+          ),
+          TextButton(
+            onPressed: () async {
+              if (GetInstance().isRegistered<PhoneGalleryController>()) {
+                await Get.find<PhoneGalleryController>().initializeAlbums();
+              }
+            },
+            child: const Text("Retry"),
           )
         ],
       ),

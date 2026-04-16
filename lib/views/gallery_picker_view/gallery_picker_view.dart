@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_picker/models/media_type.dart';
 import 'package:get/get.dart';
@@ -47,6 +50,9 @@ class GalleryPickerView extends StatefulWidget {
 
 class _GalleryPickerState extends State<GalleryPickerView> {
   PhoneGalleryController galleryController = Get.put(PhoneGalleryController());
+  Timer? _openingGateTimer;
+  bool _showOpeningGate = false;
+  bool _initStarted = false;
 
   bool noPhotoSeleceted = true;
   late Config config;
@@ -54,14 +60,36 @@ class _GalleryPickerState extends State<GalleryPickerView> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 400)).then(
-      (value) {
-        _initializeGallery();
-      },
-    );
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   _initializeGallery();
-    // });
+    config = widget.config ?? Config();
+    final useOpeningGate =
+        defaultTargetPlatform == TargetPlatform.iOS && !widget.isBottomSheet;
+    if (useOpeningGate) {
+      final gateDurationMs =
+          config.iOSOpeningGateMilliseconds < 0 ? 0 : config.iOSOpeningGateMilliseconds;
+      _showOpeningGate = true;
+      _openingGateTimer = Timer(Duration(milliseconds: gateDurationMs), () {
+        if (mounted) {
+          _showOpeningGate = false;
+          if (!galleryController.isInitialized) {
+            _startInitialization();
+          }
+          setState(() {});
+        }
+      });
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _startInitialization();
+    });
+  }
+
+  void _startInitialization() {
+    if (_initStarted) {
+      return;
+    }
+    _initStarted = true;
+    unawaited(_initializeGallery());
   }
 
   Future<void> _initializeGallery() async {
@@ -84,11 +112,15 @@ class _GalleryPickerState extends State<GalleryPickerView> {
     if (!galleryController.isInitialized) {
       await galleryController.initializeAlbums(locale: widget.locale);
     }
-    setState(() {}); // Refresh page after async init
+    if (mounted) {
+      setState(() {}); // Refresh page after async init
+    }
   }
 
   @override
-  void dispose() async {
+  void dispose() {
+    _openingGateTimer?.cancel();
+    _openingGateTimer = null;
     // galleryController.dispose();
     // await Get.delete<PhoneGalleryController>();
     super.dispose();
@@ -100,13 +132,30 @@ class _GalleryPickerState extends State<GalleryPickerView> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
 
-    if (!galleryController.isInitialized) {
-      // While the gallery is still initializing, show a lightweight loader
+    if (_showOpeningGate) {
       return const Scaffold(
+        backgroundColor: Colors.white,
         body: Center(
-          child: CircularProgressIndicator(
-            color: Colors.grey,
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (!galleryController.isInitialized) {
+      // Render the configured shell immediately while albums hydrate in background.
+      return Scaffold(
+        backgroundColor: config.backgroundColor,
+        appBar: AppBar(
+          backgroundColor: config.appbarColor,
+          elevation: 0,
+          title: Text(
+            config.gallery,
+            style: config.appbarTextStyle,
           ),
+          iconTheme: IconThemeData(color: config.appbarIconColor),
+        ),
+        body: Center(
+          child: CircularProgressIndicator(color: config.underlineColor),
         ),
       );
     }
@@ -119,7 +168,7 @@ class _GalleryPickerState extends State<GalleryPickerView> {
               children: [
                 PopScope(
                   canPop: true,
-                  onPopInvoked: (value) {
+                    onPopInvokedWithResult: (value, result) {
                     if (!widget.isBottomSheet) {
                       galleryController.disposeController();
                     }

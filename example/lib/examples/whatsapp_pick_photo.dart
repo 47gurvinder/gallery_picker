@@ -155,7 +155,7 @@ class _WhatsappPickPhotoState extends State<WhatsappPickPhoto> {
                                   if (selectedMedias
                                       .any((element) => element.id == media.id))
                                     Container(
-                                      color: Colors.black.withOpacity(0.3),
+                                      color: Colors.black.withValues(alpha: 0.3),
                                       alignment: Alignment.center,
                                       child: const Icon(
                                         Icons.check,
@@ -203,7 +203,7 @@ class _WhatsappPickPhotoState extends State<WhatsappPickPhoto> {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.5),
+                            color: Colors.black.withValues(alpha: 0.5),
                             shape: BoxShape.circle),
                         padding: const EdgeInsets.all(8),
                         child: const Icon(
@@ -261,7 +261,7 @@ class _WhatsappPickPhotoState extends State<WhatsappPickPhoto> {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.5),
+                            color: Colors.black.withValues(alpha: 0.5),
                             shape: BoxShape.circle),
                         padding: const EdgeInsets.all(8),
                         child: const Icon(

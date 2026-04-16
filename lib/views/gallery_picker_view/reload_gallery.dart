@@ -14,7 +14,7 @@ class ReloadGallery extends StatelessWidget {
       body: Center(
           child: TextButton(
         style: ButtonStyle(
-          foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+           foregroundColor: WidgetStateProperty.all<Color>(Colors.blue),
         ),
         child: Container(
             height: 50,

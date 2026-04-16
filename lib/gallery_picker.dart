@@ -1,7 +1,8 @@
-library gallery_picker;
+import 'dart:async';
 
 import 'package:bottom_sheet_scaffold/bottom_sheet_scaffold.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:gallery_picker/models/gallery_media.dart';
 import 'package:gallery_picker/models/media_type.dart';
 import 'package:get/get.dart';
@@ -36,6 +37,23 @@ export 'views/gallery_picker_view/gallery_picker_view.dart';
 export 'views/picker_scaffold.dart';
 
 class GalleryPicker {
+  static PhoneGalleryController _getOrCreateController() {
+    if (GetInstance().isRegistered<PhoneGalleryController>()) {
+      return Get.find<PhoneGalleryController>();
+    }
+    return Get.put(PhoneGalleryController());
+  }
+
+  static Route<dynamic> _buildPickerRoute({
+    required Widget child,
+    required PageTransitionType pageTransitionType,
+  }) {
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      return CupertinoPageRoute(builder: (_) => child);
+    }
+    return PageTransition(type: pageTransitionType, child: child);
+  }
+
   static Stream<List<MediaFile>> get listenSelectedFiles {
     var controller = Get.put(PickerListener());
     return controller.stream;
@@ -62,11 +80,28 @@ class GalleryPicker {
     List<MediaFile>? extraRecentMedia,
     required BuildContext context,
     GalleryMediaType? mediaType}) async {
+    final resolvedMediaType = mediaType ?? GalleryMediaType.all;
+    final controller = _getOrCreateController();
     List<MediaFile>? media;
+    controller.configuration(config,
+        onSelect: (selectedMedias) {
+          media = selectedMedias;
+        },
+        startWithRecent: startWithRecent,
+        heroBuilder: null,
+        multipleMediasBuilder: null,
+        initSelectedMedias: initSelectedMedia,
+        extraRecentMedia: extraRecentMedia,
+        isRecent: startWithRecent,
+        mediaType: resolvedMediaType);
+    if (!controller.isInitialized) {
+      unawaited(controller.initializeAlbums(locale: locale));
+    }
+
     await Navigator.push(
         context,
-        PageTransition(
-            type: pageTransitionType,
+        _buildPickerRoute(
+            pageTransitionType: pageTransitionType,
             child: GalleryPickerView(
               onSelect: (mediaTmp) {
                 media = mediaTmp;
@@ -77,7 +112,7 @@ class GalleryPicker {
               initSelectedMedia: initSelectedMedia,
               extraRecentMedia: extraRecentMedia,
               startWithRecent: startWithRecent,
-              mediaType: mediaType ?? GalleryMediaType.all,
+              mediaType: resolvedMediaType,
             )));
     return media;
   }
@@ -94,10 +129,24 @@ class GalleryPicker {
     List<MediaFile>? extraRecentMedia,
     bool startWithRecent = false,
     required BuildContext context}) async {
+    final controller = _getOrCreateController();
+    controller.configuration(config,
+        onSelect: (media) {},
+        startWithRecent: startWithRecent,
+        heroBuilder: heroBuilder,
+        multipleMediasBuilder: multipleMediaBuilder,
+        initSelectedMedias: initSelectedMedia,
+        extraRecentMedia: extraRecentMedia,
+        isRecent: startWithRecent,
+        mediaType: GalleryMediaType.all);
+    if (!controller.isInitialized) {
+      unawaited(controller.initializeAlbums(locale: locale));
+    }
+
     await Navigator.push(
         context,
-        PageTransition(
-            type: pageTransitionType,
+        _buildPickerRoute(
+            pageTransitionType: pageTransitionType,
             child: GalleryPickerView(
               onSelect: (media) {},
               locale: locale,
@@ -135,7 +184,7 @@ class GalleryPicker {
       {Locale? locale, GalleryMediaType mediaType = GalleryMediaType
           .all}) async {
     return await PhoneGalleryController.collectGallery(
-        locale: locale, mediaType:mediaType);
+      locale: locale, mediaType: mediaType, eagerLoad: true);
   }
 
   static Future<GalleryMedia?> initializeGallery({Locale? locale}) async {
