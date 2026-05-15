@@ -64,8 +64,9 @@ class _GalleryPickerState extends State<GalleryPickerView> {
     final useOpeningGate =
         defaultTargetPlatform == TargetPlatform.iOS && !widget.isBottomSheet;
     if (useOpeningGate) {
-      final gateDurationMs =
-          config.iOSOpeningGateMilliseconds < 0 ? 0 : config.iOSOpeningGateMilliseconds;
+      final gateDurationMs = config.iOSOpeningGateMilliseconds < 0
+          ? 0
+          : config.iOSOpeningGateMilliseconds;
       _showOpeningGate = true;
       _openingGateTimer = Timer(Duration(milliseconds: gateDurationMs), () {
         if (mounted) {
@@ -143,19 +144,25 @@ class _GalleryPickerState extends State<GalleryPickerView> {
 
     if (!galleryController.isInitialized) {
       // Render the configured shell immediately while albums hydrate in background.
-      return Scaffold(
-        backgroundColor: config.backgroundColor,
-        appBar: AppBar(
-          backgroundColor: config.appbarColor,
-          elevation: 0,
-          title: Text(
-            config.gallery,
-            style: config.appbarTextStyle,
+      return SafeArea(
+        bottom: true,
+        top: false,
+        left: false,
+        right: false,
+        child: Scaffold(
+          backgroundColor: config.backgroundColor,
+          appBar: AppBar(
+            backgroundColor: config.appbarColor,
+            elevation: 0,
+            title: Text(
+              config.gallery,
+              style: config.appbarTextStyle,
+            ),
+            iconTheme: IconThemeData(color: config.appbarIconColor),
           ),
-          iconTheme: IconThemeData(color: config.appbarIconColor),
-        ),
-        body: Center(
-          child: CircularProgressIndicator(color: config.underlineColor),
+          body: Center(
+            child: CircularProgressIndicator(color: config.underlineColor),
+          ),
         ),
       );
     }
@@ -168,83 +175,92 @@ class _GalleryPickerState extends State<GalleryPickerView> {
               children: [
                 PopScope(
                   canPop: true,
-                    onPopInvokedWithResult: (value, result) {
+                  onPopInvokedWithResult: (value, result) {
                     if (!widget.isBottomSheet) {
                       galleryController.disposeController();
                     }
                   },
-                  child: Scaffold(
-                    backgroundColor: config.backgroundColor,
-                    appBar: PickerAppBar(
-                      controller: galleryController,
-                      isBottomSheet: widget.isBottomSheet,
-                      singleMedia: widget.singleMedia,
-                    ),
-                    body: Column(
-                      children: [
-                        Container(
-                          width: width,
-                          height: 48,
-                          color: config.appbarColor,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              _buildMenuButton(
-                                title: config.recents,
-                                isSelected: galleryController.isRecent,
-                                onPressed: () {
-                                  galleryController.pickerPageController
-                                      .animateToPage(
-                                    0,
-                                    duration: const Duration(milliseconds: 50),
-                                    curve: Curves.easeIn,
-                                  );
-                                  galleryController.isRecent = true;
-                                  galleryController.switchPickerMode(false);
-                                },
-                              ),
-                              _buildMenuButton(
-                                title: config.gallery,
-                                isSelected: !galleryController.isRecent,
-                                onPressed: () {
-                                  galleryController.pickerPageController
-                                      .animateToPage(
-                                    1,
-                                    duration: const Duration(milliseconds: 50),
-                                    curve: Curves.easeIn,
-                                  );
-                                  galleryController.isRecent = false;
-                                  galleryController.switchPickerMode(false);
-                                },
-                              ),
-                            ],
+                  child: SafeArea(
+                    bottom: true,
+                    top: false,
+                    left: false,
+                    right: false,
+                    child: Scaffold(
+                      backgroundColor: config.backgroundColor,
+                      appBar: PickerAppBar(
+                        controller: galleryController,
+                        isBottomSheet: widget.isBottomSheet,
+                        singleMedia: widget.singleMedia,
+                      ),
+                      body: Column(
+                        children: [
+                          Container(
+                            width: width,
+                            height: 48,
+                            color: config.appbarColor,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                _buildMenuButton(
+                                  title: config.recents,
+                                  isSelected: galleryController.isRecent,
+                                  onPressed: () {
+                                    galleryController.pickerPageController
+                                        .animateToPage(
+                                      0,
+                                      duration:
+                                          const Duration(milliseconds: 50),
+                                      curve: Curves.easeIn,
+                                    );
+                                    galleryController.isRecent = true;
+                                    galleryController.switchPickerMode(false);
+                                  },
+                                ),
+                                _buildMenuButton(
+                                  title: config.gallery,
+                                  isSelected: !galleryController.isRecent,
+                                  onPressed: () {
+                                    galleryController.pickerPageController
+                                        .animateToPage(
+                                      1,
+                                      duration:
+                                          const Duration(milliseconds: 50),
+                                      curve: Curves.easeIn,
+                                    );
+                                    galleryController.isRecent = false;
+                                    galleryController.switchPickerMode(false);
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: PageView(
-                            controller: galleryController.pickerPageController,
-                            onPageChanged: (value) {
-                              galleryController.isRecent = (value == 0);
-                              galleryController.switchPickerMode(false);
-                            },
-                            scrollDirection: Axis.horizontal,
-                            children: [
-                              if (galleryController.recent != null)
-                                AlbumMediasView(
-                                  galleryAlbum: galleryController.recent!,
+                          Expanded(
+                            child: PageView(
+                              controller:
+                                  galleryController.pickerPageController,
+                              onPageChanged: (value) {
+                                galleryController.isRecent = (value == 0);
+                                galleryController.switchPickerMode(false);
+                              },
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                if (galleryController.recent != null)
+                                  AlbumMediasView(
+                                    galleryAlbum: galleryController.recent!,
+                                    controller: galleryController,
+                                    isBottomSheet: widget.isBottomSheet,
+                                    singleMedia: widget.singleMedia,
+                                  ),
+                                AlbumCategoriesView(
                                   controller: galleryController,
                                   isBottomSheet: widget.isBottomSheet,
                                   singleMedia: widget.singleMedia,
                                 ),
-                              AlbumCategoriesView(
-                                controller: galleryController,
-                                isBottomSheet: widget.isBottomSheet,
-                                singleMedia: widget.singleMedia,
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
