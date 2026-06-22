@@ -1,15 +1,51 @@
 PODS:
   - Flutter (1.0.0)
+  - libwebp (1.5.0):
+    - libwebp/demux (= 1.5.0)
+    - libwebp/mux (= 1.5.0)
+    - libwebp/sharpyuv (= 1.5.0)
+    - libwebp/webp (= 1.5.0)
+  - libwebp/demux (1.5.0):
+    - libwebp/webp
+  - libwebp/mux (1.5.0):
+    - libwebp/demux
+  - libwebp/sharpyuv (1.5.0)
+  - libwebp/webp (1.5.0):
+    - libwebp/sharpyuv
+  - permission_handler_apple (9.3.0):
+    - Flutter
+  - photo_gallery (0.0.1):
+    - Flutter
+  - video_thumbnail (0.0.1):
+    - Flutter
+    - libwebp
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
+  - photo_gallery (from `.symlinks/plugins/photo_gallery/ios`)
+  - video_thumbnail (from `.symlinks/plugins/video_thumbnail/ios`)
+
+SPEC REPOS:
+  trunk:
+    - libwebp
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
+  photo_gallery:
+    :path: ".symlinks/plugins/photo_gallery/ios"
+  video_thumbnail:
+    :path: ".symlinks/plugins/video_thumbnail/ios"
 
 SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
+  permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
+  photo_gallery: 9f95e57747cd22c10676ece3660d1ffe6c603ee5
+  video_thumbnail: e7c914a574da8f0453ff3ab485cf47ccb862cc9f
 
 PODFILE CHECKSUM: 5c8eb167e48255b7544ab290f70b4d6a1076ca06
 
