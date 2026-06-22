@@ -26,21 +26,21 @@ packages:
     source: hosted
     version: "0.1.9"
   camera:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: camera
-      sha256: dfa8fc5a1adaeb95e7a54d86a5bd56f4bb0e035515354c8ac6d262e35cec2ec8
+      sha256: "4142a19a38e388d3bab444227636610ba88982e36dff4552d5191a86f65dc437"
       url: "https://pub.dev"
     source: hosted
-    version: "0.10.6"
-  camera_android:
+    version: "0.11.4"
+  camera_android_camerax:
     dependency: transitive
     description:
-      name: camera_android
-      sha256: bd9737671a00d979e0310a946e5be2fdc621b6a36b95378755cb3e4498e61485
+      name: camera_android_camerax
+      sha256: "8516fe308bc341a5067fb1a48edff0ddfa57c0d3cdcc9dbe7ceca3ba119e2577"
       url: "https://pub.dev"
     source: hosted
-    version: "0.10.10+2"
+    version: "0.6.30"
   camera_avfoundation:
     dependency: transitive
     description:
@@ -53,10 +53,10 @@ packages:
     dependency: transitive
     description:
       name: camera_platform_interface
-      sha256: "2f757024a48696ff4814a789b0bd90f5660c0fb25f393ab4564fb483327930e2"
+      sha256: "7ac852d77699acee79f0d438b793feee26721841e50973576419ff5c6d95e9b7"
       url: "https://pub.dev"
     source: hosted
-    version: "2.10.0"
+    version: "2.13.0"
   camera_web:
     dependency: transitive
     description:
@@ -170,10 +170,10 @@ packages:
     dependency: "direct dev"
     description:
       name: flutter_lints
-      sha256: a25a15ebbdfc33ab1cd26c63a6ee519df92338a9c10f122adda92938253bef04
+      sha256: "5398f14efa795ffb7a33e9b6a08798b26a180edac4ad7db3f231e40f82ce11e1"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.3"
+    version: "5.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -198,7 +198,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.5.1"
+    version: "0.5.3"
   get:
     dependency: transitive
     description:
@@ -251,18 +251,18 @@ packages:
     dependency: transitive
     description:
       name: lints
-      sha256: "0a217c6c989d21039f1498c3ed9f3ed71b354e69873f13a8dfc3c9fe76f1b452"
+      sha256: c35bb79562d980e9a453fc715854e1ed39e24e7d0297a880ef54e17f9874a9d7
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.1"
+    version: "5.1.1"
   matcher:
     dependency: transitive
     description:
       name: matcher
-      sha256: "12956d0ad8390bbcc63ca2e1469c0619946ccb52809807067a7020d57e647aa6"
+      sha256: dc0b7dc7651697ea4ff3e69ef44b0407ea32c487a39fff6a4004fa585e901861
       url: "https://pub.dev"
     source: hosted
-    version: "0.12.18"
+    version: "0.12.19"
   material_color_utilities:
     dependency: transitive
     description:
@@ -275,18 +275,18 @@ packages:
     dependency: transitive
     description:
       name: meta
-      sha256: "23f08335362185a5ea2ad3a4e597f1375e78bce8a040df5c600c8d3552ef2394"
+      sha256: "1741988757a65eb6b36abe716829688cf01910bbf91c34354ff7ec1c3de2b349"
       url: "https://pub.dev"
     source: hosted
-    version: "1.17.0"
+    version: "1.18.0"
   page_transition:
     dependency: transitive
     description:
       name: page_transition
-      sha256: "9d2a780d7d68b53ae82fbcc43e06a16195e6775e9aae40e55dc0cbb593460f9d"
+      sha256: "61dac670e80ebdd7da847c21841e1dfd8f9ab483b3a0c5fddc877ad8d23b69ee"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.1"
+    version: "2.2.2"
   path:
     dependency: transitive
     description:
@@ -346,10 +346,12 @@ packages:
   photo_gallery:
     dependency: transitive
     description:
-      path: "/Users/gurwinder/projects/gurwinder/plugins/photo_gallery"
-      relative: false
-    source: path
-    version: "2.2.1"
+      path: "."
+      ref: HEAD
+      resolved-ref: "59825dfb81014d4ff2dbe4d4cfc40360075a89c6"
+      url: "https://github.com/47gurvinder/photo_gallery.git"
+    source: git
+    version: "2.2.2"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -415,10 +417,10 @@ packages:
     dependency: transitive
     description:
       name: test_api
-      sha256: "93167629bfc610f71560ab9312acdda4959de4df6fac7492c89ff0d3886f6636"
+      sha256: "949a932224383300f01be9221c39180316445ecb8e7547f70a41a35bf421fb9e"
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.9"
+    version: "0.7.11"
   transparent_image:
     dependency: transitive
     description:
@@ -478,11 +480,12 @@ packages:
   video_thumbnail:
     dependency: transitive
     description:
-      name: video_thumbnail
-      sha256: "3455c189d3f0bb4e3fc2236475aa84fe598b9b2d0e08f43b9761f5bc44210016"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.3"
+      path: "."
+      ref: HEAD
+      resolved-ref: "82fd0dafef69e105b6f22e917a83d3879ec0aa89"
+      url: "https://github.com/47gurvinder/video_thumbnail"
+    source: git
+    version: "0.5.6"
   vm_service:
     dependency: transitive
     description:
@@ -516,5 +519,5 @@ packages:
     source: hosted
     version: "2.1.0"
 sdks:
-  dart: ">=3.9.0-0 <4.0.0"
-  flutter: ">=3.27.0"
+  dart: ">=3.10.0-0 <4.0.0"
+  flutter: ">=3.35.0"

@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.example.gallery_picker_example"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "27.0.12077973"
+    ndkVersion = flutter.ndkVersion
 
 
     compileOptions {

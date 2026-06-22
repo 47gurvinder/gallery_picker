@@ -5,7 +5,7 @@ homepage: https://github.com/FlutterWay/gallery_picker
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
-  flutter: ">=1.17.0"
+  flutter: ">=3.3.0"
 
 dependencies:
   flutter:
@@ -21,13 +21,12 @@ dependencies:
   video_player: ^2.8.2
   device_info_plus: ^11.4.0
   get: ^4.6.6
-  video_thumbnail: ^0.5.3
-#  video_thumbnail:
-#    git:
-#      url: https://github.com/zeelbhanderi/video_thumbnail.git
+  video_thumbnail:
+    git:
+      url: https://github.com/47gurvinder/video_thumbnail
 
   intl: ^0.19.0
-  page_transition: ^2.1.0
+  page_transition: ^2.2.2
   bottom_sheet_scaffold: ^0.1.9
 dev_dependencies:
   flutter_test:
