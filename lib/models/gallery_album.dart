@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:photo_gallery/photo_gallery.dart';
+import 'package:photo_gallery_gdx_plus/photo_gallery_gdx_plus.dart';
 
 import '../controller/gallery_controller.dart';
 import '/models/media_file.dart';

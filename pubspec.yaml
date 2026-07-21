@@ -4,26 +4,20 @@ version: 0.5.4
 homepage: https://github.com/FlutterWay/gallery_picker
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
-  flutter: ">=3.3.0"
+  sdk: '>=3.11.0 <4.0.0'
+  flutter: ">=3.41.1"
 
 dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.6
-  photo_gallery:
-    git:
-      url: https://github.com/47gurvinder/photo_gallery.git
-      
+  photo_gallery_gdx_plus: ^2.3.1
   permission_handler: ^11.3.1
   transparent_image: ^2.0.1
   video_player: ^2.8.2
   device_info_plus: ^13.1.0
   get: ^4.6.6
-  video_thumbnail:
-    git:
-      url: https://github.com/47gurvinder/video_thumbnail
-
+  video_thumbnail_gdx_plus: ^0.5.8
   intl: ^0.19.0
   page_transition: ^2.2.2
   bottom_sheet_scaffold: ^0.1.9

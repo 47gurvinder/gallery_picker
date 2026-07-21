@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:photo_gallery/photo_gallery.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:photo_gallery_gdx_plus/photo_gallery_gdx_plus.dart';
+import 'package:video_thumbnail_gdx_plus/video_thumbnail_gdx_plus.dart';
 
 enum MediaType { image, video }
 

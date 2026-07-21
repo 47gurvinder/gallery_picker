@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:gallery_picker/models/media_type.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:photo_gallery/photo_gallery.dart';
+import 'package:photo_gallery_gdx_plus/photo_gallery_gdx_plus.dart';
 
 import '../models/config.dart';
 import '../models/gallery_media.dart';
