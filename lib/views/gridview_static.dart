@@ -34,28 +34,33 @@ class GridViewStatic extends StatelessWidget {
           for (int i = 0; i < crossAxisCount; i += crossAxisCount)
             Padding(
               padding: EdgeInsets.only(
-                  bottom: i != children.length - 1 ? mainAxisSpacing : 0),
+                bottom: i != children.length - 1 ? mainAxisSpacing : 0,
+              ),
               child: SizedBox(
                 height: size / crossAxisCount,
                 child: Row(
                   children: [
-                    for (int j = i;
-                        j < i + (children.length ~/ crossAxisCount) + 1;
-                        j++)
+                    for (
+                      int j = i;
+                      j < i + (children.length ~/ crossAxisCount) + 1;
+                      j++
+                    )
                       j < children.length
                           ? Expanded(
                               child: Padding(
-                              padding: EdgeInsets.only(
+                                padding: EdgeInsets.only(
                                   right: j != i + crossAxisCount
                                       ? crossAxisSpacing
-                                      : 0),
-                              child: children[j],
-                            ))
-                          : const Spacer()
+                                      : 0,
+                                ),
+                                child: children[j],
+                              ),
+                            )
+                          : const Spacer(),
                   ],
                 ),
               ),
-            )
+            ),
         ],
       ),
     );
@@ -72,24 +77,27 @@ class GridViewStatic extends StatelessWidget {
               height: (size / crossAxisCount) * childAspectRatio,
               child: Padding(
                 padding: EdgeInsets.only(
-                    bottom: i != children.length - 1 ? mainAxisSpacing : 0),
+                  bottom: i != children.length - 1 ? mainAxisSpacing : 0,
+                ),
                 child: Row(
                   children: [
                     for (int j = i; j < i + crossAxisCount; j++)
                       j < children.length
                           ? Expanded(
                               child: Padding(
-                              padding: EdgeInsets.only(
+                                padding: EdgeInsets.only(
                                   right: j != i + crossAxisCount
                                       ? crossAxisSpacing
-                                      : 0),
-                              child: children[j],
-                            ))
-                          : const Spacer()
+                                      : 0,
+                                ),
+                                child: children[j],
+                              ),
+                            )
+                          : const Spacer(),
                   ],
                 ),
               ),
-            )
+            ),
         ],
       ),
     );

@@ -10,12 +10,13 @@ class DateCategoryWiew extends StatelessWidget {
   final DateCategory category;
   final bool isBottomSheet;
 
-  const DateCategoryWiew(
-      {super.key,
-      required this.category,
-      required this.controller,
-      required this.isBottomSheet,
-      required this.singleMedia});
+  const DateCategoryWiew({
+    super.key,
+    required this.category,
+    required this.controller,
+    required this.isBottomSheet,
+    required this.singleMedia,
+  });
 
   int getRowCount() {
     if (category.files.length % 4 != 0) {
@@ -35,10 +36,7 @@ class DateCategoryWiew extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  category.name,
-                  style: controller.config.textStyle,
-                ),
+                child: Text(category.name, style: controller.config.textStyle),
               ),
             ),
             GridViewStatic(
@@ -49,10 +47,12 @@ class DateCategoryWiew extends StatelessWidget {
               crossAxisSpacing: 3.0,
               children: <Widget>[
                 ...category.files.map(
-                  (medium) => MediaView(medium,
-                      controller: controller,
-                      singleMedia: singleMedia,
-                      isBottomSheet: isBottomSheet),
+                  (medium) => MediaView(
+                    medium,
+                    controller: controller,
+                    singleMedia: singleMedia,
+                    isBottomSheet: isBottomSheet,
+                  ),
                 ),
               ],
             ),

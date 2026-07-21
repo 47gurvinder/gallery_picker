@@ -72,10 +72,7 @@ class _VideoProviderState extends State<VideoProvider> {
       initMedia();
     }
     return _controller == null || !_controller!.value.isInitialized
-        ? SizedBox(
-            width: widget.width,
-            height: widget.height,
-          )
+        ? SizedBox(width: widget.width, height: widget.height)
         : SizedBox(
             width: widget.width,
             height: widget.height,
@@ -83,26 +80,28 @@ class _VideoProviderState extends State<VideoProvider> {
               children: <Widget>[
                 AspectRatio(
                   aspectRatio: _controller!.value.aspectRatio,
-                  child: Stack(children: [
-                    VideoPlayer(_controller!),
-                    Center(
-                      child: TextButton(
-                        onPressed: () {
-                          anyProcess = true;
-                          setState(() {
+                  child: Stack(
+                    children: [
+                      VideoPlayer(_controller!),
+                      Center(
+                        child: TextButton(
+                          onPressed: () {
+                            anyProcess = true;
+                            setState(() {
+                              _controller!.value.isPlaying
+                                  ? _controller!.pause()
+                                  : _controller!.play();
+                            });
+                          },
+                          child: Icon(
                             _controller!.value.isPlaying
-                                ? _controller!.pause()
-                                : _controller!.play();
-                          });
-                        },
-                        child: Icon(
-                          _controller!.value.isPlaying
-                              ? Icons.pause
-                              : Icons.play_arrow,
+                                ? Icons.pause
+                                : Icons.play_arrow,
+                          ),
                         ),
                       ),
-                    ),
-                  ]),
+                    ],
+                  ),
                 ),
               ],
             ),

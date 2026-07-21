@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:bottom_sheet_scaffold/bottom_sheet_scaffold.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:gallery_picker/models/gallery_media.dart';
-import 'package:gallery_picker/models/media_type.dart';
+import 'package:gallery_picker_gdx_plus/models/gallery_media.dart';
+import 'package:gallery_picker_gdx_plus/models/media_type.dart';
 import 'package:get/get.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -71,7 +71,8 @@ class GalleryPicker {
     }
   }
 
-  static Future<List<MediaFile>?> pickMedia({Config? config,
+  static Future<List<MediaFile>?> pickMedia({
+    Config? config,
     bool startWithRecent = false,
     bool singleMedia = false,
     Locale? locale,
@@ -79,45 +80,51 @@ class GalleryPicker {
     List<MediaFile>? initSelectedMedia,
     List<MediaFile>? extraRecentMedia,
     required BuildContext context,
-    GalleryMediaType? mediaType}) async {
+    GalleryMediaType? mediaType,
+  }) async {
     final resolvedMediaType = mediaType ?? GalleryMediaType.all;
     final controller = _getOrCreateController();
     List<MediaFile>? media;
-    controller.configuration(config,
-        onSelect: (selectedMedias) {
-          media = selectedMedias;
-        },
-        startWithRecent: startWithRecent,
-        heroBuilder: null,
-        multipleMediasBuilder: null,
-        initSelectedMedias: initSelectedMedia,
-        extraRecentMedia: extraRecentMedia,
-        isRecent: startWithRecent,
-        mediaType: resolvedMediaType);
+    controller.configuration(
+      config,
+      onSelect: (selectedMedias) {
+        media = selectedMedias;
+      },
+      startWithRecent: startWithRecent,
+      heroBuilder: null,
+      multipleMediasBuilder: null,
+      initSelectedMedias: initSelectedMedia,
+      extraRecentMedia: extraRecentMedia,
+      isRecent: startWithRecent,
+      mediaType: resolvedMediaType,
+    );
     if (!controller.isInitialized) {
       unawaited(controller.initializeAlbums(locale: locale));
     }
 
     await Navigator.push(
-        context,
-        _buildPickerRoute(
-            pageTransitionType: pageTransitionType,
-            child: GalleryPickerView(
-              onSelect: (mediaTmp) {
-                media = mediaTmp;
-              },
-              config: config,
-              locale: locale,
-              singleMedia: singleMedia,
-              initSelectedMedia: initSelectedMedia,
-              extraRecentMedia: extraRecentMedia,
-              startWithRecent: startWithRecent,
-              mediaType: resolvedMediaType,
-            )));
+      context,
+      _buildPickerRoute(
+        pageTransitionType: pageTransitionType,
+        child: GalleryPickerView(
+          onSelect: (mediaTmp) {
+            media = mediaTmp;
+          },
+          config: config,
+          locale: locale,
+          singleMedia: singleMedia,
+          initSelectedMedia: initSelectedMedia,
+          extraRecentMedia: extraRecentMedia,
+          startWithRecent: startWithRecent,
+          mediaType: resolvedMediaType,
+        ),
+      ),
+    );
     return media;
   }
 
-  static Future<void> pickMediaWithBuilder({Config? config,
+  static Future<void> pickMediaWithBuilder({
+    Config? config,
     required Widget Function(List<MediaFile> media, BuildContext context)?
     multipleMediaBuilder,
     Widget Function(String tag, MediaFile media, BuildContext context)?
@@ -128,36 +135,41 @@ class GalleryPicker {
     List<MediaFile>? initSelectedMedia,
     List<MediaFile>? extraRecentMedia,
     bool startWithRecent = false,
-    required BuildContext context}) async {
+    required BuildContext context,
+  }) async {
     final controller = _getOrCreateController();
-    controller.configuration(config,
-        onSelect: (media) {},
-        startWithRecent: startWithRecent,
-        heroBuilder: heroBuilder,
-        multipleMediasBuilder: multipleMediaBuilder,
-        initSelectedMedias: initSelectedMedia,
-        extraRecentMedia: extraRecentMedia,
-        isRecent: startWithRecent,
-        mediaType: GalleryMediaType.all);
+    controller.configuration(
+      config,
+      onSelect: (media) {},
+      startWithRecent: startWithRecent,
+      heroBuilder: heroBuilder,
+      multipleMediasBuilder: multipleMediaBuilder,
+      initSelectedMedias: initSelectedMedia,
+      extraRecentMedia: extraRecentMedia,
+      isRecent: startWithRecent,
+      mediaType: GalleryMediaType.all,
+    );
     if (!controller.isInitialized) {
       unawaited(controller.initializeAlbums(locale: locale));
     }
 
     await Navigator.push(
-        context,
-        _buildPickerRoute(
-            pageTransitionType: pageTransitionType,
-            child: GalleryPickerView(
-              onSelect: (media) {},
-              locale: locale,
-              multipleMediaBuilder: multipleMediaBuilder,
-              heroBuilder: heroBuilder,
-              singleMedia: singleMedia,
-              config: config,
-              initSelectedMedia: initSelectedMedia,
-              extraRecentMedia: extraRecentMedia,
-              startWithRecent: startWithRecent,
-            )));
+      context,
+      _buildPickerRoute(
+        pageTransitionType: pageTransitionType,
+        child: GalleryPickerView(
+          onSelect: (media) {},
+          locale: locale,
+          multipleMediaBuilder: multipleMediaBuilder,
+          heroBuilder: heroBuilder,
+          singleMedia: singleMedia,
+          config: config,
+          initSelectedMedia: initSelectedMedia,
+          extraRecentMedia: extraRecentMedia,
+          startWithRecent: startWithRecent,
+        ),
+      ),
+    );
   }
 
   static Future<void> openSheet() async {
@@ -180,11 +192,15 @@ class GalleryPicker {
     return BottomSheetPanel.isCollapsed;
   }
 
-  static Future<GalleryMedia?> collectGallery(
-      {Locale? locale, GalleryMediaType mediaType = GalleryMediaType
-          .all}) async {
+  static Future<GalleryMedia?> collectGallery({
+    Locale? locale,
+    GalleryMediaType mediaType = GalleryMediaType.all,
+  }) async {
     return await PhoneGalleryController.collectGallery(
-      locale: locale, mediaType: mediaType, eagerLoad: true);
+      locale: locale,
+      mediaType: mediaType,
+      eagerLoad: true,
+    );
   }
 
   static Future<GalleryMedia?> initializeGallery({Locale? locale}) async {

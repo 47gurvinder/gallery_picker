@@ -1,8 +1,4 @@
 PODS:
-  - camera_avfoundation (0.0.1):
-    - Flutter
-  - device_info_plus (0.0.1):
-    - Flutter
   - Flutter (1.0.0)
   - libwebp (1.5.0):
     - libwebp/demux (= 1.5.0)
@@ -16,24 +12,15 @@ PODS:
   - libwebp/sharpyuv (1.5.0)
   - libwebp/webp (1.5.0):
     - libwebp/sharpyuv
-  - permission_handler_apple (9.3.0):
-    - Flutter
   - photo_gallery_gdx_plus (2.3.1):
     - Flutter
-  - video_player_avfoundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
   - video_thumbnail_gdx_plus (0.5.8):
     - Flutter
     - libwebp
 
 DEPENDENCIES:
-  - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
-  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - Flutter (from `Flutter`)
-  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - photo_gallery_gdx_plus (from `.symlinks/plugins/photo_gallery_gdx_plus/ios`)
-  - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
   - video_thumbnail_gdx_plus (from `.symlinks/plugins/video_thumbnail_gdx_plus/ios`)
 
 SPEC REPOS:
@@ -41,30 +28,18 @@ SPEC REPOS:
     - libwebp
 
 EXTERNAL SOURCES:
-  camera_avfoundation:
-    :path: ".symlinks/plugins/camera_avfoundation/ios"
-  device_info_plus:
-    :path: ".symlinks/plugins/device_info_plus/ios"
   Flutter:
     :path: Flutter
-  permission_handler_apple:
-    :path: ".symlinks/plugins/permission_handler_apple/ios"
   photo_gallery_gdx_plus:
     :path: ".symlinks/plugins/photo_gallery_gdx_plus/ios"
-  video_player_avfoundation:
-    :path: ".symlinks/plugins/video_player_avfoundation/darwin"
   video_thumbnail_gdx_plus:
     :path: ".symlinks/plugins/video_thumbnail_gdx_plus/ios"
 
 SPEC CHECKSUMS:
-  camera_avfoundation: adb0207d868b2d873e895371d88448399ab78d87
-  device_info_plus: bf2e3232933866d73fe290f2942f2156cdd10342
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
-  permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
-  photo_gallery_gdx_plus: 7353ce25c89ad8e1b083b6483024be8fff4913e4
-  video_player_avfoundation: 7c6c11d8470e1675df7397027218274b6d2360b3
-  video_thumbnail_gdx_plus: e8fcd4f03494d4a2ee53f1b207c6d0b9c7c604c1
+  photo_gallery_gdx_plus: f99b45a695aae6d3d2f5e37990b0193c98867076
+  video_thumbnail_gdx_plus: 9d0949e88ed9a936429cca481829933047d3e8d1
 
 PODFILE CHECKSUM: f3734cf2c64ab93db34ebd0461528389a119c1e8
 

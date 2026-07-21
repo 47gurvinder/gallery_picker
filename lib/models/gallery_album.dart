@@ -31,21 +31,21 @@ class GalleryAlbum {
   bool get isLoadingMore => _isLoadingMore;
   bool get hasLoadedAllMedia => _hasLoadedAllMedia;
   bool get hasPreview => thumbnail != null;
-  int get count =>
-      _initialized
-          ? dateCategories.expand((element) => element.files).toList().length
-          : _estimatedCount;
+  int get count => _initialized
+      ? dateCategories.expand((element) => element.files).toList().length
+      : _estimatedCount;
   String? get name => album.name;
 
   GalleryAlbum.album(this.album) {
     _estimatedCount = album.count;
   }
 
-  GalleryAlbum(
-      {required this.album,
-      required this.type,
-      this.thumbnail,
-      this.dateCategories = const []});
+  GalleryAlbum({
+    required this.album,
+    required this.type,
+    this.thumbnail,
+    this.dateCategories = const [],
+  });
 
   List<MediaFile> get medias {
     return dateCategories
@@ -76,10 +76,11 @@ class GalleryAlbum {
     }
   }
 
-  Future<void> initialize(
-      {Locale? locale,
-      VoidCallback? onChanged,
-      bool lightWeight = false}) async {
+  Future<void> initialize({
+    Locale? locale,
+    VoidCallback? onChanged,
+    bool lightWeight = false,
+  }) async {
     if (_initialized) {
       return _paginationTask ?? Future.value();
     }
@@ -88,8 +89,11 @@ class GalleryAlbum {
       return _initializationTask!;
     }
 
-    _initializationTask =
-        _initializeInPages(locale: locale, onChanged: onChanged, lightWeight: lightWeight);
+    _initializationTask = _initializeInPages(
+      locale: locale,
+      onChanged: onChanged,
+      lightWeight: lightWeight,
+    );
     await _initializationTask!;
     _initializationTask = null;
   }
@@ -110,10 +114,11 @@ class GalleryAlbum {
     return _previewTask!;
   }
 
-  Future<void> _initializeInPages(
-      {Locale? locale,
-      VoidCallback? onChanged,
-      required bool lightWeight}) async {
+  Future<void> _initializeInPages({
+    Locale? locale,
+    VoidCallback? onChanged,
+    required bool lightWeight,
+  }) async {
     _isLoadingMore = true;
 
     MediaPage primaryPage = await album.listMedia(
@@ -138,22 +143,26 @@ class GalleryAlbum {
 
     List<Future<void>> remainingPageTasks = [];
     if (!primaryPage.isLast) {
-      remainingPageTasks.add(_loadRemainingPages(
-        sourceAlbum: album,
-        startAt: primaryPage.end,
-        locale: locale,
-        onChanged: onChanged,
-        lightWeight: lightWeight,
-      ));
+      remainingPageTasks.add(
+        _loadRemainingPages(
+          sourceAlbum: album,
+          startAt: primaryPage.end,
+          locale: locale,
+          onChanged: onChanged,
+          lightWeight: lightWeight,
+        ),
+      );
     }
     if (secondaryPage != null && !secondaryPage.isLast) {
-      remainingPageTasks.add(_loadRemainingPages(
-        sourceAlbum: secondaryAlbum!,
-        startAt: secondaryPage.end,
-        locale: locale,
-        onChanged: onChanged,
-        lightWeight: lightWeight,
-      ));
+      remainingPageTasks.add(
+        _loadRemainingPages(
+          sourceAlbum: secondaryAlbum!,
+          startAt: secondaryPage.end,
+          locale: locale,
+          onChanged: onChanged,
+          lightWeight: lightWeight,
+        ),
+      );
     }
 
     if (remainingPageTasks.isEmpty) {
@@ -171,12 +180,13 @@ class GalleryAlbum {
     unawaited(_paginationTask);
   }
 
-  Future<void> _loadRemainingPages(
-      {required Album sourceAlbum,
-      required int startAt,
-      required Locale? locale,
-      VoidCallback? onChanged,
-      required bool lightWeight}) async {
+  Future<void> _loadRemainingPages({
+    required Album sourceAlbum,
+    required int startAt,
+    required Locale? locale,
+    VoidCallback? onChanged,
+    required bool lightWeight,
+  }) async {
     int currentOffset = startAt;
 
     while (currentOffset < sourceAlbum.count) {
@@ -230,7 +240,8 @@ class GalleryAlbum {
         DateTime? lastDate = mediaFile.lastModified;
         lastDate = lastDate ?? DateTime.now();
         dateCategories.add(
-            DateCategory(files: [mediaFile], name: name, dateTime: lastDate));
+          DateCategory(files: [mediaFile], name: name, dateTime: lastDate),
+        );
       }
     }
   }
@@ -290,7 +301,7 @@ class GalleryAlbum {
     return mediumList;
   }
 
-  sort() {
+  void sort() {
     dateCategories.sort((a, b) => b.dateTime.compareTo(a.dateTime));
 
     for (var category in dateCategories) {
@@ -316,8 +327,9 @@ class GalleryAlbum {
     } else {
       DateTime? lastDate = file.lastModified;
       lastDate = lastDate ?? DateTime.now();
-      dateCategories
-          .add(DateCategory(files: [file], name: name, dateTime: lastDate));
+      dateCategories.add(
+        DateCategory(files: [file], name: name, dateTime: lastDate),
+      );
     }
   }
 }
@@ -326,8 +338,11 @@ class DateCategory {
   String name;
   List<MediaFile> files;
   DateTime dateTime;
-  DateCategory(
-      {required this.files, required this.name, required this.dateTime});
+  DateCategory({
+    required this.files,
+    required this.name,
+    required this.dateTime,
+  });
 }
 
 enum AlbumType { video, image, mixed }

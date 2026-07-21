@@ -1,7 +1,7 @@
 import 'package:bottom_sheet_scaffold/bottom_sheet_scaffold.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:gallery_picker/controller/gallery_controller.dart';
+import 'package:gallery_picker_gdx_plus/controller/gallery_controller.dart';
 import '/gallery_picker.dart';
 import 'package:get/get.dart';
 
@@ -43,12 +43,14 @@ class PickerScaffold extends StatelessWidget {
   }) {
     if (GetInstance().isRegistered<PhoneGalleryController>()) {
       if (initSelectedMedia != null) {
-        Get.find<PhoneGalleryController>()
-            .updateSelectedFiles(initSelectedMedia!);
+        Get.find<PhoneGalleryController>().updateSelectedFiles(
+          initSelectedMedia!,
+        );
       }
       if (extraRecentMedia != null) {
-        Get.find<PhoneGalleryController>()
-            .updateExtraRecentMedia(extraRecentMedia!);
+        Get.find<PhoneGalleryController>().updateExtraRecentMedia(
+          extraRecentMedia!,
+        );
       }
     }
   }
@@ -83,9 +85,9 @@ class PickerScaffold extends StatelessWidget {
   final Future<bool> Function()? onWillPop;
   final Function(List<MediaFile> selectedMedia) onSelect;
   final Widget Function(String tag, MediaFile media, BuildContext context)?
-      heroBuilder;
+  heroBuilder;
   final Widget Function(List<MediaFile> media, BuildContext context)?
-      multipleMediaBuilder;
+  multipleMediaBuilder;
   @override
   Widget build(BuildContext context) {
     return BottomSheetScaffold(
@@ -140,19 +142,20 @@ class PickerScaffold extends StatelessWidget {
           }
         },
         body: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: GalleryPickerView(
-              onSelect: onSelect,
-              config: config,
-              heroBuilder: heroBuilder,
-              multipleMediaBuilder: multipleMediaBuilder,
-              singleMedia: singleMedia,
-              isBottomSheet: true,
-              initSelectedMedia: initSelectedMedia,
-              extraRecentMedia: extraRecentMedia,
-              startWithRecent: true,
-            )),
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: GalleryPickerView(
+            onSelect: onSelect,
+            config: config,
+            heroBuilder: heroBuilder,
+            multipleMediaBuilder: multipleMediaBuilder,
+            singleMedia: singleMedia,
+            isBottomSheet: true,
+            initSelectedMedia: initSelectedMedia,
+            extraRecentMedia: extraRecentMedia,
+            startWithRecent: true,
+          ),
+        ),
       ),
     );
   }

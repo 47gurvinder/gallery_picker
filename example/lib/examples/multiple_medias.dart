@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
-import 'package:gallery_picker/gallery_picker.dart';
+import 'package:gallery_picker_gdx_plus/gallery_picker.dart';
 
 import '../main.dart';
 
@@ -18,94 +18,108 @@ class _MultipleMediasViewState extends State<MultipleMediasView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Destination Page"),
-      ),
-      body: Column(children: [
-        const Spacer(),
-        const Text("These are your selected medias"),
-        const Divider(),
-        Expanded(
-          flex: 5,
-          child: Stack(children: [
-            PageView(
-              controller: controller,
+      appBar: AppBar(title: const Text("Destination Page")),
+      body: Column(
+        children: [
+          const Spacer(),
+          const Text("These are your selected medias"),
+          const Divider(),
+          Expanded(
+            flex: 5,
+            child: Stack(
               children: [
-                for (var media in widget.medias)
-                  Center(
-                    child: MediaProvider(
-                      media: media,
+                PageView(
+                  controller: controller,
+                  children: [
+                    for (var media in widget.medias)
+                      Center(child: MediaProvider(media: media)),
+                  ],
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      if (pageIndex < widget.medias.length - 1) {
+                        pageIndex++;
+                        controller.animateToPage(
+                          pageIndex,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeIn,
+                        );
+                        setState(() {});
+                      }
+                    },
+                    child: const Icon(
+                      Icons.chevron_right,
+                      size: 100,
+                      color: Colors.red,
                     ),
-                  )
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(
+                    onPressed: () {
+                      if (pageIndex > 0) {
+                        pageIndex--;
+                        controller.animateToPage(
+                          pageIndex,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeIn,
+                        );
+                        setState(() {});
+                      }
+                    },
+                    child: const Icon(
+                      Icons.chevron_left,
+                      size: 100,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
               ],
             ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                  onPressed: () {
-                    if (pageIndex < widget.medias.length - 1) {
-                      pageIndex++;
-                      controller.animateToPage(pageIndex,
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeIn);
-                      setState(() {});
-                    }
-                  },
-                  child: const Icon(
-                    Icons.chevron_right,
-                    size: 100,
-                    color: Colors.red,
-                  )),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton(
-                  onPressed: () {
-                    if (pageIndex > 0) {
-                      pageIndex--;
-                      controller.animateToPage(pageIndex,
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeIn);
-                      setState(() {});
-                    }
-                  },
-                  child: const Icon(
-                    Icons.chevron_left,
-                    size: 100,
-                    color: Colors.red,
-                  )),
-            ),
-          ]),
-        ),
-        const Divider(),
-        SizedBox(
-          height: 50,
-          child: ListView(scrollDirection: Axis.horizontal, children: [
-            for (int i = 0; i < widget.medias.length; i++)
-              TextButton(
-                  onPressed: () {
-                    pageIndex = i;
-                    controller.animateToPage(i,
+          ),
+          const Divider(),
+          SizedBox(
+            height: 50,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                for (int i = 0; i < widget.medias.length; i++)
+                  TextButton(
+                    onPressed: () {
+                      pageIndex = i;
+                      controller.animateToPage(
+                        i,
                         duration: const Duration(milliseconds: 500),
-                        curve: Curves.easeIn);
-                    setState(() {});
-                  },
-                  child: Container(
-                    width: 50,
-                    height: 50,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
+                        curve: Curves.easeIn,
+                      );
+                      setState(() {});
+                    },
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: i == pageIndex ? Colors.red : Colors.grey),
-                    child: Text(
-                      (i + 1).toString(),
-                      style: const TextStyle(fontSize: 16, color: Colors.black),
+                        color: i == pageIndex ? Colors.red : Colors.grey,
+                      ),
+                      child: Text(
+                        (i + 1).toString(),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
                     ),
-                  ))
-          ]),
-        ),
-        const Spacer(),
-      ]),
+                  ),
+              ],
+            ),
+          ),
+          const Spacer(),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () {
@@ -113,16 +127,12 @@ class _MultipleMediasViewState extends State<MultipleMediasView> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => MyHomePage(
-                      title: "Selected Medias",
-                      medias: widget.medias,
-                    )),
+              builder: (context) =>
+                  MyHomePage(title: "Selected Medias", medias: widget.medias),
+            ),
           );
         },
-        child: const Icon(
-          Icons.send,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.send, color: Colors.white),
       ),
     );
   }

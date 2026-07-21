@@ -1,3 +1,14 @@
+## 0.6.0 - 2026-07-21
+
+* Renamed the package to `gallery_picker_gdx_plus`; applications must update their dependency and `package:` imports.
+* Added support for the Dart 3.11 and Flutter 3.41 toolchain baseline.
+* Migrated gallery and video-thumbnail integrations to the maintained `photo_gallery_gdx_plus` and `video_thumbnail_gdx_plus` packages.
+* Improved paginated media loading and album hydration for mixed image and video galleries.
+* Improved permission handling on iOS and Android 13 and newer, including limited photo-library access.
+* Fixed gallery compatibility on iOS 18 and newer.
+* Fixed custom `Config` colors and text styles failing to initialize when explicitly provided.
+* Moved package maintenance and issue tracking to `47gurvinder/gallery_picker`.
+
 ## 0.5.2
 
 * Improved gallery controller with paginated media loading
@@ -193,5 +204,3 @@
 ## 0.5.1
 
 * readme changed
-  
-  

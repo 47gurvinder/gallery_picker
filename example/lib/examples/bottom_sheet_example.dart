@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
-import 'package:gallery_picker/gallery_picker.dart';
+import 'package:gallery_picker_gdx_plus/gallery_picker.dart';
 
 class BottomSheetExample extends StatefulWidget {
   const BottomSheetExample({super.key});
@@ -22,9 +22,11 @@ class _BottomSheetExampleState extends State<BottomSheetExample> {
         pageIndex = 0;
         if (this.selectedMedias.isNotEmpty) {
           Future.delayed(const Duration(milliseconds: 500)).then((value) {
-            controller.animateToPage(0,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeIn);
+            controller.animateToPage(
+              0,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeIn,
+            );
           });
         }
         setState(() {});
@@ -42,29 +44,28 @@ class _BottomSheetExampleState extends State<BottomSheetExample> {
             const Divider(),
             Expanded(
               flex: 5,
-              child: Stack(children: [
-                if (selectedMedias.isNotEmpty)
-                  PageView(
-                    controller: controller,
-                    children: [
-                      for (var media in selectedMedias)
-                        Center(
-                          child: MediaProvider(
-                            media: media,
-                          ),
-                        )
-                    ],
-                  ),
-                if (selectedMedias.isNotEmpty)
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
+              child: Stack(
+                children: [
+                  if (selectedMedias.isNotEmpty)
+                    PageView(
+                      controller: controller,
+                      children: [
+                        for (var media in selectedMedias)
+                          Center(child: MediaProvider(media: media)),
+                      ],
+                    ),
+                  if (selectedMedias.isNotEmpty)
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
                         onPressed: () {
                           if (pageIndex < selectedMedias.length - 1) {
                             pageIndex++;
-                            controller.animateToPage(pageIndex,
-                                duration: const Duration(milliseconds: 500),
-                                curve: Curves.easeIn);
+                            controller.animateToPage(
+                              pageIndex,
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeIn,
+                            );
                             setState(() {});
                           }
                         },
@@ -72,18 +73,21 @@ class _BottomSheetExampleState extends State<BottomSheetExample> {
                           Icons.chevron_right,
                           size: 100,
                           color: Colors.red,
-                        )),
-                  ),
-                if (selectedMedias.isNotEmpty)
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: TextButton(
+                        ),
+                      ),
+                    ),
+                  if (selectedMedias.isNotEmpty)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton(
                         onPressed: () {
                           if (pageIndex > 0) {
                             pageIndex--;
-                            controller.animateToPage(pageIndex,
-                                duration: const Duration(milliseconds: 500),
-                                curve: Curves.easeIn);
+                            controller.animateToPage(
+                              pageIndex,
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeIn,
+                            );
                             setState(() {});
                           }
                         },
@@ -91,9 +95,11 @@ class _BottomSheetExampleState extends State<BottomSheetExample> {
                           Icons.chevron_left,
                           size: 100,
                           color: Colors.red,
-                        )),
-                  ),
-              ]),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
             SizedBox(
               height: 65,
@@ -106,43 +112,37 @@ class _BottomSheetExampleState extends State<BottomSheetExample> {
                       child: TextButton(
                         onPressed: () {
                           pageIndex = i;
-                          controller.animateToPage(pageIndex,
-                              duration: const Duration(milliseconds: 500),
-                              curve: Curves.easeIn);
+                          controller.animateToPage(
+                            pageIndex,
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.easeIn,
+                          );
                           setState(() {});
                         },
                         child: Container(
-                            width: 65,
-                            height: 50,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    width: 2,
-                                    color: pageIndex == i
-                                        ? Colors.red
-                                        : Colors.black)),
-                            child: ThumbnailMedia(
-                              media: selectedMedias[i],
-                            )),
+                          width: 65,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 2,
+                              color: pageIndex == i ? Colors.red : Colors.black,
+                            ),
+                          ),
+                          child: ThumbnailMedia(media: selectedMedias[i]),
+                        ),
                       ),
-                    )
+                    ),
                 ],
               ),
             ),
-            const Spacer(
-              flex: 1,
-            ),
+            const Spacer(flex: 1),
             TextButton(
               onPressed: () {
                 GalleryPicker.openSheet();
               },
-              child: const Icon(
-                Icons.open_in_new,
-                size: 40,
-              ),
+              child: const Icon(Icons.open_in_new, size: 40),
             ),
-            const Spacer(
-              flex: 1,
-            ),
+            const Spacer(flex: 1),
           ],
         ),
       ),

@@ -9,18 +9,17 @@ class ThumbnailAlbum extends StatelessWidget {
   final GalleryAlbum album;
   final Color failIconColor, backgroundColor;
   final Mode mode;
-  const ThumbnailAlbum(
-      {super.key,
-      required this.album,
-      required this.failIconColor,
-      required this.mode,
-      required this.backgroundColor});
+  const ThumbnailAlbum({
+    super.key,
+    required this.album,
+    required this.failIconColor,
+    required this.mode,
+    required this.backgroundColor,
+  });
 
   Color adjustFailedBgColor() {
     if (mode == Mode.dark) {
-      return lighten(
-        backgroundColor,
-      );
+      return lighten(backgroundColor);
     } else {
       return darken(backgroundColor);
     }
@@ -36,8 +35,9 @@ class ThumbnailAlbum extends StatelessWidget {
   Color lighten(Color color, [double amount = .05]) {
     assert(amount >= 0 && amount <= 1);
     final hsl = HSLColor.fromColor(color);
-    final hslLight =
-        hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
+    final hslLight = hsl.withLightness(
+      (hsl.lightness + amount).clamp(0.0, 1.0),
+    );
     return hslLight.toColor();
   }
 
@@ -48,16 +48,17 @@ class ThumbnailAlbum extends StatelessWidget {
       children: [
         if (album.thumbnail == null)
           Container(
-              color: adjustFailedBgColor(),
-              child: Icon(
-                album.type == AlbumType.image
-                    ? Icons.image_not_supported
-                    : album.type == AlbumType.video
-                        ? Icons.videocam_off_rounded
-                        : Icons.browser_not_supported,
-                size: 50,
-                color: failIconColor,
-              ))
+            color: adjustFailedBgColor(),
+            child: Icon(
+              album.type == AlbumType.image
+                  ? Icons.image_not_supported
+                  : album.type == AlbumType.video
+                  ? Icons.videocam_off_rounded
+                  : Icons.browser_not_supported,
+              size: 50,
+              color: failIconColor,
+            ),
+          )
         else if (album.thumbnail != null)
           FadeInImage(
             image: MemoryImage(Uint8List.fromList(album.thumbnail!)),
@@ -67,20 +68,12 @@ class ThumbnailAlbum extends StatelessWidget {
           )
         else
           const SizedBox(),
-        Opacity(
-          opacity: 0.5,
-          child: Container(
-            color: Colors.black,
-          ),
-        ),
+        Opacity(opacity: 0.5, child: Container(color: Colors.black)),
         Positioned(
-            bottom: 5,
-            left: 5,
-            child: Icon(
-              album.icon,
-              color: Colors.white,
-              size: 16,
-            )),
+          bottom: 5,
+          left: 5,
+          child: Icon(album.icon, color: Colors.white, size: 16),
+        ),
         Positioned(
           left: 25,
           bottom: 5,

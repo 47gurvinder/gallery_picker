@@ -31,13 +31,13 @@ class PhotoProvider extends StatelessWidget {
           child: (snapshot.hasError && onFailBuilder != null)
               ? onFailBuilder!(context)
               : (snapshot.hasData)
-                  ? FadeInImage(
-                      fadeInDuration: const Duration(milliseconds: 200),
-                      fit: BoxFit.cover,
-                      placeholder: MemoryImage(kTransparentImage),
-                      image: MemoryImage(snapshot.data!),
-                    )
-                  : const SizedBox(),
+              ? FadeInImage(
+                  fadeInDuration: const Duration(milliseconds: 200),
+                  fit: BoxFit.cover,
+                  placeholder: MemoryImage(kTransparentImage),
+                  image: MemoryImage(snapshot.data!),
+                )
+              : const SizedBox(),
         );
       }),
     );

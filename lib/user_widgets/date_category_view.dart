@@ -7,13 +7,14 @@ import 'thumbnail_media.dart';
 class DateCategoryWiew extends StatelessWidget {
   final TextStyle? textStyle;
   final Widget Function(MediaFile media, BuildContext context)?
-      onMediaErrorBuilder;
+  onMediaErrorBuilder;
   final DateCategory category;
-  const DateCategoryWiew(
-      {super.key,
-      required this.category,
-      this.textStyle,
-      this.onMediaErrorBuilder});
+  const DateCategoryWiew({
+    super.key,
+    required this.category,
+    this.textStyle,
+    this.onMediaErrorBuilder,
+  });
 
   int getRowCount() {
     if (category.files.length % 4 != 0) {
@@ -33,10 +34,7 @@ class DateCategoryWiew extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  category.name,
-                  style: textStyle,
-                ),
+                child: Text(category.name, style: textStyle),
               ),
             ),
             GridViewStatic(

@@ -28,8 +28,11 @@ class MediaFile {
         : MediaType.image;
     _id = _medium!.id;
   }
-  MediaFile.file(
-      {required String id, required File file, required MediaType type}) {
+  MediaFile.file({
+    required String id,
+    required File file,
+    required MediaType type,
+  }) {
     _file = file;
     _id = id;
     _type = type;
@@ -46,7 +49,8 @@ class MediaFile {
           : await getData();
     } else {
       thumbnail = Uint8List.fromList(
-          await _medium!.getThumbnail(highQuality: highQuality));
+        await _medium!.getThumbnail(highQuality: highQuality),
+      );
     }
     return thumbnail!;
   }

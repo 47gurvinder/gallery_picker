@@ -14,10 +14,7 @@ class AlbumMediaView extends StatelessWidget {
         ListView(
           children: [
             for (var category in galleryAlbum.dateCategories)
-              DateCategoryWiew(
-                category: category,
-                textStyle: textStyle,
-              ),
+              DateCategoryWiew(category: category, textStyle: textStyle),
           ],
         ),
       ],

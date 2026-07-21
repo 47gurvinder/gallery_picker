@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
-import 'package:gallery_picker/gallery_picker.dart';
+import 'package:gallery_picker_gdx_plus/gallery_picker.dart';
 
 class GalleryPickerExample extends StatefulWidget {
   const GalleryPickerExample({super.key});
@@ -16,43 +16,38 @@ class _GalleryPickerExampleState extends State<GalleryPickerExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Pick medias"),
-      ),
+      appBar: AppBar(title: const Text("Pick medias")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Spacer(),
-            const Text(
-              'These are your selected medias',
-            ),
+            const Text('These are your selected medias'),
             const Divider(),
             Expanded(
               flex: 5,
-              child: Stack(children: [
-                if (selectedMedias.isNotEmpty)
-                  PageView(
-                    controller: controller,
-                    children: [
-                      for (var media in selectedMedias)
-                        Center(
-                          child: MediaProvider(
-                            media: media,
-                          ),
-                        )
-                    ],
-                  ),
-                if (selectedMedias.isNotEmpty)
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
+              child: Stack(
+                children: [
+                  if (selectedMedias.isNotEmpty)
+                    PageView(
+                      controller: controller,
+                      children: [
+                        for (var media in selectedMedias)
+                          Center(child: MediaProvider(media: media)),
+                      ],
+                    ),
+                  if (selectedMedias.isNotEmpty)
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
                         onPressed: () {
                           if (pageIndex < selectedMedias.length - 1) {
                             pageIndex++;
-                            controller.animateToPage(pageIndex,
-                                duration: const Duration(milliseconds: 500),
-                                curve: Curves.easeIn);
+                            controller.animateToPage(
+                              pageIndex,
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeIn,
+                            );
                             setState(() {});
                           }
                         },
@@ -60,18 +55,21 @@ class _GalleryPickerExampleState extends State<GalleryPickerExample> {
                           Icons.chevron_right,
                           size: 100,
                           color: Colors.red,
-                        )),
-                  ),
-                if (selectedMedias.isNotEmpty)
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: TextButton(
+                        ),
+                      ),
+                    ),
+                  if (selectedMedias.isNotEmpty)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton(
                         onPressed: () {
                           if (pageIndex > 0) {
                             pageIndex--;
-                            controller.animateToPage(pageIndex,
-                                duration: const Duration(milliseconds: 500),
-                                curve: Curves.easeIn);
+                            controller.animateToPage(
+                              pageIndex,
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeIn,
+                            );
                             setState(() {});
                           }
                         },
@@ -79,9 +77,11 @@ class _GalleryPickerExampleState extends State<GalleryPickerExample> {
                           Icons.chevron_left,
                           size: 100,
                           color: Colors.red,
-                        )),
-                  ),
-              ]),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
             SizedBox(
               height: 65,
@@ -94,31 +94,30 @@ class _GalleryPickerExampleState extends State<GalleryPickerExample> {
                       child: TextButton(
                         onPressed: () {
                           pageIndex = i;
-                          controller.animateToPage(pageIndex,
-                              duration: const Duration(milliseconds: 500),
-                              curve: Curves.easeIn);
+                          controller.animateToPage(
+                            pageIndex,
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.easeIn,
+                          );
                           setState(() {});
                         },
                         child: Container(
-                            width: 65,
-                            height: 50,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    width: 2,
-                                    color: pageIndex == i
-                                        ? Colors.red
-                                        : Colors.black)),
-                            child: ThumbnailMedia(
-                              media: selectedMedias[i],
-                            )),
+                          width: 65,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 2,
+                              color: pageIndex == i ? Colors.red : Colors.black,
+                            ),
+                          ),
+                          child: ThumbnailMedia(media: selectedMedias[i]),
+                        ),
                       ),
-                    )
+                    ),
                 ],
               ),
             ),
-            const Spacer(
-              flex: 2,
-            ),
+            const Spacer(flex: 2),
           ],
         ),
       ),

@@ -9,12 +9,12 @@ class AlbumCategoriesView extends StatelessWidget {
   final bool isBottomSheet;
   final bool singleMedia;
 
-  AlbumCategoriesView(
-      {super.key,
-      required this.controller,
-      required this.isBottomSheet,
-      required this.singleMedia})
-      : config = controller.config;
+  AlbumCategoriesView({
+    super.key,
+    required this.controller,
+    required this.isBottomSheet,
+    required this.singleMedia,
+  }) : config = controller.config;
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -27,19 +27,23 @@ class AlbumCategoriesView extends StatelessWidget {
             ...controller.galleryAlbums.map(
               (album) => GestureDetector(
                 onTap: () => controller.changeAlbum(
-                    album: album,
-                    isBottomSheet: isBottomSheet,
-                    controller: controller,
-                    singleMedia: singleMedia,
-                    context: context),
-                child: Stack(fit: StackFit.passthrough, children: [
-                  ThumbnailAlbum(
-                    album: album,
-                    failIconColor: config.appbarIconColor,
-                    backgroundColor: config.backgroundColor,
-                    mode: config.mode,
-                  ),
-                ]),
+                  album: album,
+                  isBottomSheet: isBottomSheet,
+                  controller: controller,
+                  singleMedia: singleMedia,
+                  context: context,
+                ),
+                child: Stack(
+                  fit: StackFit.passthrough,
+                  children: [
+                    ThumbnailAlbum(
+                      album: album,
+                      failIconColor: config.appbarIconColor,
+                      backgroundColor: config.backgroundColor,
+                      mode: config.mode,
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

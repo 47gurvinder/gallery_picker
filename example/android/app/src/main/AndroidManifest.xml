@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="gallery_picker_example"
+        android:label="gallery_picker_gdx_plus_example"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

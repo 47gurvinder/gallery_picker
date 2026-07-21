@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gallery_picker/gallery_picker.dart';
+import 'package:gallery_picker_gdx_plus/gallery_picker.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -16,28 +16,21 @@ class PermissionDeniedView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(
-            height: 50,
-          ),
+          const SizedBox(height: 50),
           Text(
             "Please allow access to your photos",
             style: TextStyle(
-                color: config.textStyle.color,
-                fontSize: 20,
-                fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            "This lets access your photos and videos from your library.",
-            style: TextStyle(
               color: config.textStyle.color,
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(
-            height: 10,
+          const SizedBox(height: 10),
+          Text(
+            "This lets access your photos and videos from your library.",
+            style: TextStyle(color: config.textStyle.color),
           ),
+          const SizedBox(height: 10),
           TextButton(
             onPressed: () async {
               await openAppSettings();
@@ -51,7 +44,7 @@ class PermissionDeniedView extends StatelessWidget {
               }
             },
             child: const Text("Retry"),
-          )
+          ),
         ],
       ),
     );

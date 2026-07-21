@@ -9,12 +9,13 @@ class AlbumMediasView extends StatelessWidget {
   final PhoneGalleryController controller;
   final bool singleMedia;
   final bool isBottomSheet;
-  const AlbumMediasView(
-      {super.key,
-      required this.galleryAlbum,
-      required this.controller,
-      required this.isBottomSheet,
-      required this.singleMedia});
+  const AlbumMediasView({
+    super.key,
+    required this.galleryAlbum,
+    required this.controller,
+    required this.isBottomSheet,
+    required this.singleMedia,
+  });
   final GalleryAlbum galleryAlbum;
 
   @override
@@ -62,11 +63,12 @@ class AlbumMediasView extends StatelessWidget {
           ),
         if (controller.selectedFiles.isNotEmpty)
           Align(
-              alignment: Alignment.bottomCenter,
-              child: SelectedMediasView(
-                controller: controller,
-                isBottomSheet: isBottomSheet,
-              ))
+            alignment: Alignment.bottomCenter,
+            child: SelectedMediasView(
+              controller: controller,
+              isBottomSheet: isBottomSheet,
+            ),
+          ),
       ],
     );
   }
@@ -76,26 +78,30 @@ class AlbumMediasView extends StatelessWidget {
         controller.extraRecentMedia != null &&
         controller.extraRecentMedia!.isNotEmpty) {
       List<DateCategory> categoriesTmp = categories.map((e) => e).toList();
-      int index = categoriesTmp
-          .indexWhere((element) => element.name == controller.config.recent);
+      int index = categoriesTmp.indexWhere(
+        (element) => element.name == controller.config.recent,
+      );
       if (index != -1) {
         DateCategory category = DateCategory(
-            files: [
-              ...controller.extraRecentMedia!,
-              ...categoriesTmp[index].files,
-            ],
-            name: categoriesTmp[index].name,
-            dateTime: categoriesTmp[index].dateTime);
+          files: [
+            ...controller.extraRecentMedia!,
+            ...categoriesTmp[index].files,
+          ],
+          name: categoriesTmp[index].name,
+          dateTime: categoriesTmp[index].dateTime,
+        );
         categoriesTmp[index] = category;
         return categoriesTmp;
       } else {
         return [
           DateCategory(
-              files: controller.extraRecentMedia!,
-              dateTime: controller.extraRecentMedia!.first.lastModified ??
-                  DateTime.now(),
-              name: controller.config.recent),
-          ...categoriesTmp
+            files: controller.extraRecentMedia!,
+            dateTime:
+                controller.extraRecentMedia!.first.lastModified ??
+                DateTime.now(),
+            name: controller.config.recent,
+          ),
+          ...categoriesTmp,
         ];
       }
     } else {

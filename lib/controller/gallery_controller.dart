@@ -5,7 +5,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:gallery_picker/models/media_type.dart';
+import 'package:gallery_picker_gdx_plus/models/media_type.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_gallery_gdx_plus/photo_gallery_gdx_plus.dart';
@@ -21,16 +21,18 @@ class PhoneGalleryController extends GetxController {
   late Config config;
   late GalleryMediaType mediaType;
 
-  void configuration(Config? config,
-      {required dynamic Function(List<MediaFile>) onSelect,
-        required Widget Function(String, MediaFile, BuildContext)? heroBuilder,
-        required bool isRecent,
-        required bool startWithRecent,
-        required List<MediaFile>? initSelectedMedias,
-        required List<MediaFile>? extraRecentMedia,
-        required Widget Function(List<MediaFile>, BuildContext)?
-        multipleMediasBuilder,
-        required GalleryMediaType mediaType}) {
+  void configuration(
+    Config? config, {
+    required dynamic Function(List<MediaFile>) onSelect,
+    required Widget Function(String, MediaFile, BuildContext)? heroBuilder,
+    required bool isRecent,
+    required bool startWithRecent,
+    required List<MediaFile>? initSelectedMedias,
+    required List<MediaFile>? extraRecentMedia,
+    required Widget Function(List<MediaFile>, BuildContext)?
+    multipleMediasBuilder,
+    required GalleryMediaType mediaType,
+  }) {
     this.onSelect = onSelect;
     this.heroBuilder = heroBuilder;
     this.isRecent = isRecent;
@@ -126,27 +128,37 @@ class PhoneGalleryController extends GetxController {
     GalleryAlbum? recentTmp = recent;
     if (recentTmp != null) {
       _extraRecentMedia!.removeWhere(
-              (element) =>
-              recentTmp.files.any((file) => element.id == file.id));
+        (element) => recentTmp.files.any((file) => element.id == file.id),
+      );
     }
     update();
   }
 
-  Future<void> changeAlbum({required GalleryAlbum album,
+  Future<void> changeAlbum({
+    required GalleryAlbum album,
     required BuildContext context,
     required PhoneGalleryController controller,
     required bool singleMedia,
-    required bool isBottomSheet}) async {
+    required bool isBottomSheet,
+  }) async {
     _selectedFiles.clear();
     if (!album.isInitialized) {
-      unawaited(album.initialize(
-          locale: _activeLocale, onChanged: update, lightWeight: true));
+      unawaited(
+        album.initialize(
+          locale: _activeLocale,
+          onChanged: update,
+          lightWeight: true,
+        ),
+      );
     }
     selectedAlbum = album;
     update();
     updatePickerListener();
-    await pageController.animateToPage(1,
-        duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
+    await pageController.animateToPage(
+      1,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeIn,
+    );
   }
 
   Future<void> backToPicker() async {
@@ -154,8 +166,11 @@ class PhoneGalleryController extends GetxController {
     _pickerMode = false;
     pickerPageController = PageController(initialPage: 1);
     update();
-    await pageController.animateToPage(0,
-        duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
+    await pageController.animateToPage(
+      0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeIn,
+    );
     selectedAlbum = null;
     update();
   }
@@ -195,28 +210,37 @@ class PhoneGalleryController extends GetxController {
     }
   }
 
-  static Future<bool> promptPermissionSetting(
-      {required GalleryMediaType mediaType}) async {
+  static Future<bool> promptPermissionSetting({
+    required GalleryMediaType mediaType,
+  }) async {
     if (Platform.isAndroid) {
       final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
       final AndroidDeviceInfo info = await deviceInfoPlugin.androidInfo;
       if (info.version.sdkInt >= 33) {
         if (mediaType == GalleryMediaType.image) {
-          return await PhoneGalleryController.requestPermission(Permission.photos);
+          return await PhoneGalleryController.requestPermission(
+            Permission.photos,
+          );
         }
         if (mediaType == GalleryMediaType.video) {
-          return await PhoneGalleryController.requestPermission(Permission.videos);
+          return await PhoneGalleryController.requestPermission(
+            Permission.videos,
+          );
         }
 
-        final photosGranted =
-            await PhoneGalleryController.requestPermission(Permission.photos);
+        final photosGranted = await PhoneGalleryController.requestPermission(
+          Permission.photos,
+        );
         if (!photosGranted) {
           return false;
         }
-        return await PhoneGalleryController.requestPermission(Permission.videos);
+        return await PhoneGalleryController.requestPermission(
+          Permission.videos,
+        );
       } else {
         return await PhoneGalleryController.requestPermission(
-            Permission.storage);
+          Permission.storage,
+        );
       }
     }
 
@@ -256,7 +280,10 @@ class PhoneGalleryController extends GetxController {
   Future<void> _initializeAlbumsInternal({Locale? locale}) async {
     _activeLocale = locale;
     _media = await PhoneGalleryController.collectGallery(
-        locale: locale, mediaType: mediaType, eagerLoad: false);
+      locale: locale,
+      mediaType: mediaType,
+      eagerLoad: false,
+    );
     if (_media != null) {
       _permissionPollingTimer?.cancel();
       _permissionPollingTimer = null;
@@ -264,8 +291,9 @@ class PhoneGalleryController extends GetxController {
       if (_extraRecentMedia != null) {
         GalleryAlbum? recentTmp = recent;
         if (recentTmp != null) {
-          _extraRecentMedia!.removeWhere((element) =>
-              recentTmp.files.any((file) => element.id == file.id));
+          _extraRecentMedia!.removeWhere(
+            (element) => recentTmp.files.any((file) => element.id == file.id),
+          );
         }
       }
       permissionGranted = true;
@@ -293,8 +321,13 @@ class PhoneGalleryController extends GetxController {
       }
 
       if (recentAlbum != null) {
-        unawaited(recentAlbum.initialize(
-            locale: locale, onChanged: update, lightWeight: true));
+        unawaited(
+          recentAlbum.initialize(
+            locale: locale,
+            onChanged: update,
+            lightWeight: true,
+          ),
+        );
       }
 
       for (final album in albums) {
@@ -311,8 +344,9 @@ class PhoneGalleryController extends GetxController {
   void permissionListener({Locale? locale}) {
     _permissionPollingTimer?.cancel();
     _permissionPollingAttempts = 0;
-    _permissionPollingTimer =
-        Timer.periodic(const Duration(seconds: 2), (timer) async {
+    _permissionPollingTimer = Timer.periodic(const Duration(seconds: 2), (
+      timer,
+    ) async {
       _permissionPollingAttempts++;
       if (_permissionPollingAttempts >= _maxPermissionPollingAttempts) {
         timer.cancel();
@@ -356,10 +390,11 @@ class PhoneGalleryController extends GetxController {
     return await Permission.storage.isGranted;
   }
 
-  static Future<GalleryMedia?> collectGallery(
-      {Locale? locale,
-      required GalleryMediaType mediaType,
-      bool eagerLoad = true}) async {
+  static Future<GalleryMedia?> collectGallery({
+    Locale? locale,
+    required GalleryMediaType mediaType,
+    bool eagerLoad = true,
+  }) async {
     if (await promptPermissionSetting(mediaType: mediaType)) {
       List<GalleryAlbum> tempGalleryAlbums = [];
       List<Album> photoAlbums = [];
@@ -367,17 +402,23 @@ class PhoneGalleryController extends GetxController {
 
       if (!eagerLoad) {
         if (mediaType == GalleryMediaType.image) {
-          photoAlbums =
-                await PhotoGallery.listAlbums(mediumType: MediumType.image, approximateCount: true);
+          photoAlbums = await PhotoGallery.listAlbums(
+            mediumType: MediumType.image,
+            approximateCount: true,
+          );
         }
 
         if (mediaType == GalleryMediaType.video) {
-          videoAlbums =
-                await PhotoGallery.listAlbums(mediumType: MediumType.video, approximateCount: true);
+          videoAlbums = await PhotoGallery.listAlbums(
+            mediumType: MediumType.video,
+            approximateCount: true,
+          );
         }
 
         if (mediaType == GalleryMediaType.all) {
-            final mixedAlbums = await PhotoGallery.listAlbums(approximateCount: true);
+          final mixedAlbums = await PhotoGallery.listAlbums(
+            approximateCount: true,
+          );
           for (final mixedAlbum in mixedAlbums) {
             final entry = GalleryAlbum.album(mixedAlbum);
             entry.setType = AlbumType.mixed;
@@ -402,40 +443,52 @@ class PhoneGalleryController extends GetxController {
 
       if (mediaType == GalleryMediaType.image ||
           mediaType == GalleryMediaType.all) {
-        photoAlbums =
-        await PhotoGallery.listAlbums(mediumType: MediumType.image);
+        photoAlbums = await PhotoGallery.listAlbums(
+          mediumType: MediumType.image,
+        );
         if (mediaType == GalleryMediaType.all) {
-          videoAlbums =
-              await PhotoGallery.listAlbums(mediumType: MediumType.video);
+          videoAlbums = await PhotoGallery.listAlbums(
+            mediumType: MediumType.video,
+          );
         }
         for (var photoAlbum in photoAlbums) {
           GalleryAlbum entireGalleryAlbum = GalleryAlbum.album(photoAlbum);
           await entireGalleryAlbum.initialize(
-              locale: locale, onChanged: null, lightWeight: false);
+            locale: locale,
+            onChanged: null,
+            lightWeight: false,
+          );
           entireGalleryAlbum.setType = AlbumType.image;
           if (videoAlbums.any((element) => element.id == photoAlbum.id)) {
-            Album videoAlbum = videoAlbums
-                .singleWhere((element) => element.id == photoAlbum.id);
+            Album videoAlbum = videoAlbums.singleWhere(
+              (element) => element.id == photoAlbum.id,
+            );
             GalleryAlbum videoGalleryAlbum = GalleryAlbum.album(videoAlbum);
             await videoGalleryAlbum.initialize(
-                locale: locale, onChanged: null, lightWeight: false);
+              locale: locale,
+              onChanged: null,
+              lightWeight: false,
+            );
             DateTime? lastPhotoDate = entireGalleryAlbum.lastDate;
             DateTime? lastVideoDate = videoGalleryAlbum.lastDate;
 
             if (lastPhotoDate == null) {
               try {
-                entireGalleryAlbum.thumbnail =
-                await videoAlbum.getThumbnail(highQuality: true);
+                entireGalleryAlbum.thumbnail = await videoAlbum.getThumbnail(
+                  highQuality: true,
+                );
               } catch (e) {
                 if (kDebugMode) {
                   print(e);
                 }
               }
-            } else if (lastVideoDate == null) {} else {
+            } else if (lastVideoDate == null) {
+            } else {
               if (lastVideoDate.isAfter(lastPhotoDate)) {
                 try {
-                  entireGalleryAlbum.thumbnail =
-                  await videoAlbum.getThumbnail(highQuality: true);
+                  entireGalleryAlbum.thumbnail = await videoAlbum.getThumbnail(
+                    highQuality: true,
+                  );
                 } catch (e) {
                   entireGalleryAlbum.thumbnail = null;
                   if (kDebugMode) {
@@ -456,8 +509,9 @@ class PhoneGalleryController extends GetxController {
       }
 
       if (mediaType == GalleryMediaType.video) {
-        videoAlbums =
-        await PhotoGallery.listAlbums(mediumType: MediumType.video);
+        videoAlbums = await PhotoGallery.listAlbums(
+          mediumType: MediumType.video,
+        );
       }
 
       if (mediaType == GalleryMediaType.video ||
@@ -465,7 +519,10 @@ class PhoneGalleryController extends GetxController {
         for (var videoAlbum in videoAlbums) {
           GalleryAlbum galleryVideoAlbum = GalleryAlbum.album(videoAlbum);
           await galleryVideoAlbum.initialize(
-              locale: locale, onChanged: null, lightWeight: false);
+            locale: locale,
+            onChanged: null,
+            lightWeight: false,
+          );
           galleryVideoAlbum.setType = AlbumType.video;
           tempGalleryAlbums.add(galleryVideoAlbum);
         }

@@ -24,9 +24,7 @@ class SelectedMediaThumbnail extends StatelessWidget {
 
   Color adjustFailedBgColor() {
     if (controller.config.mode == Mode.dark) {
-      return lighten(
-        controller.config.backgroundColor,
-      );
+      return lighten(controller.config.backgroundColor);
     } else {
       return darken(controller.config.backgroundColor);
     }
