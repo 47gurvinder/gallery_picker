@@ -1,4 +1,4 @@
-## 0.6.0 - 2026-07-21
+## 0.6.0 - 2026-07-23
 
 * Renamed the package to `gallery_picker_gdx_plus`; applications must update their dependency and `package:` imports.
 * Added support for the Dart 3.11 and Flutter 3.41 toolchain baseline.
